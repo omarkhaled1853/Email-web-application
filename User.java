@@ -94,4 +94,82 @@ public class User {
     public void setDraft(Draft draft) {
         this.draft = draft;
     }
+
+    static class User_builder implements UserBuilder{
+          User user =new User();
+        @Override
+        public User build() {
+            return user;
+        }
+
+        @Override
+        public UserBuilder setname(String name) {
+           user.name=name;
+           return this;
+        }
+
+        @Override
+        public UserBuilder set_email(ArrayList<UserE_mail> e_mails) {
+            user.userEMails=e_mails;
+            return this;
+        }
+
+        @Override
+        public UserBuilder setId(String id) {
+            user.id=id;
+            return this;
+        }
+
+        @Override
+        public UserBuilder setinbox(ArrayList<Mail> inbox) {
+           user.inbox.setInboxMails(inbox);
+           return this;
+        }
+
+        @Override
+        public UserBuilder settrash(ArrayList<Mail> trash) {
+            user.trash.setTrashMails(trash);
+            return this;
+        }
+
+        @Override
+        public UserBuilder setsent(ArrayList<Mail> sent) {
+            user.sent.setSentMails(sent);
+            return this;
+        }
+
+        @Override
+        public UserBuilder setdraft(ArrayList<Mail> draft) {
+            user.draft.setDrafts(draft);
+            return this;
+        }
+
+        @Override
+        public UserBuilder setfolders(ArrayList<Folder> folders) {
+            user.folders=folders;
+            return null;
+        }
+
+        @Override
+        public UserBuilder setcontacts(ArrayList<Contact> contacts) {
+            user.contacts=contacts;
+            return this;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", userEMails=" + userEMails +
+                ", password='" + password + '\'' +
+                ", id='" + id + '\'' +
+                ", inbox=" + inbox +
+                ", contacts=" + contacts +
+                ", folders=" + folders +
+                ", trash=" + trash +
+                ", sent=" + sent +
+                ", draft=" + draft +
+                '}';
+    }
 }
