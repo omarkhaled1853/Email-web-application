@@ -78,11 +78,12 @@ export default {
       var mail = document.getElementById("typeEmailX").value;
       console.log(mail);
       var patern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (mail.match(patern)) {
+      if (mail.match(patern) && this.password1!=='') {
         this.login();
+        console.log("ksdml")
         this.isEmailInvalid = false;
       } else {
-        alert("enter valid email");
+        alert("enter valid email and sure there is no feld empty!!");
         console.log("invalid");
         this.isEmailInvalid = true;
       }
@@ -92,7 +93,7 @@ export default {
       this.person.password = this.password1;
       localStorage.setItem("person-inf", JSON.stringify(this.person));
    //   localStorage.setItem( JSON.stringify(this.person));
-      let res = await fetch("http://localhist8080?${this.pesron}", {
+      let res = await fetch(`http://localhost8080?$email=${this.person.email},password=${this.person.password}`, {
         method: "GET",
       }).catch((error) => {
         console.error("Fetch error:", error);

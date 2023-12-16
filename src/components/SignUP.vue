@@ -5,7 +5,7 @@
         <div class="col-12 col-md-8 col-lg-6 col-xl-5">
           <div class="card bg-dark text-white" style="border-radius: 1rem">
             <div class="card-body p-5 text-center">
-              <div class="mb-md-5 mt-md-4 pb-5">
+              <div class="mb-md-5  ">
                 <h2 class="fw-bold mb-2 text-uppercase">Sign Up</h2>
                 <p class="text-white-50 mb-5">
                   Welcome, Please enter your data
@@ -15,21 +15,24 @@
                   :class="{ 'has-error': isuserInvalid }"
                 >
                   <input
+                    placeholder="username"
                     type="text"
-                    id="typeUsernameX"
+                    id="typeuserNameX"
                     class="form-control form-control-lg"
-                    v-model="this.username1"
+                    v-model="this.userName1"
                     required
                   />
-                  <label class="form-label" for="typeUsernameX"
+                  <label class="form-label" for="typeuserNameX"
                     >User name</label
                   >
                 </div>
+
                 <div
                   class="form-outline form-white mb-4"
                   :class="{ 'has-error': isEmailInvalid }"
                 >
                   <input
+                    placeholder="username@example.com"
                     type="email"
                     id="typeEmailX"
                     class="form-control form-control-lg"
@@ -44,6 +47,7 @@
 
                 <div class="form-outline form-white mb-4">
                   <input
+                    placeholder="Enter at least 8 characters"
                     type="password"
                     id="typePasswordX"
                     class="form-control form-control-lg"
@@ -52,13 +56,14 @@
                   />
                   <label class="form-label" for="typePasswordX">Password</label>
                 </div>
+
                 <button
                   class="btn btn-outline-light btn-lg px-5"
                   @click="validate()"
-                  type="submit"
                 >
                   SIGN UP
                 </button>
+
               </div>
               <div>
                 <p class="mb-0">
@@ -79,13 +84,13 @@ export default {
   name: "SignU",
   data() {
     return {
-      username1: "",
+      userName1: "",
       email1: "",
       password1: "",
       isEmailInvalid: false,
       isuserInvalid: false,
       person: {
-        username: "",
+        userName: "",
         email: "",
         password: "",
       },
@@ -96,34 +101,35 @@ export default {
       var mail = document.getElementById("typeEmailX").value;
       console.log(mail);
       var patern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      console.log(this.username1);
-      if (mail.match(patern) && this.username1.trim() !== "") {
-        this.login();
+      if (mail.match(patern) && this.userName1.trim() !== "" && this.password1 !== "") {
+        this.signUp();
         this.isEmailInvalid = false;
         this.isuserInvalid = false;
-      } else if (this.username1.trim() === "") {
-        alert("Username cannot be empty");
+      } else if (this.userName1.trim() === "") {
+        alert("userName cannot be empty");
         this.isUserInvalid = true;
-      } else {
+      } else if (!mail.match(patern)) {
         alert("Enter a valid email");
         console.log("Invalid email");
         this.isEmailInvalid = true;
       }
+
     },
-    async login() {
-      this.person.username = this.username1;
+    async signUp() {
+      this.person.userName = this.userName1;
       this.person.email = this.email1;
       this.person.password = this.password1;
-      localStorage.setItem("person-inf", JSON.stringify(this.person));
-      let res = await fetch("http://localhist8080/", {
+      // localStorage.setItem("person-inf", JSON.stringify(this.person));
+      console.log("omar")
+      await fetch("http://localhost:8080/signUp", {
         method: "POST",
         body: JSON.stringify(this.person),
       }).catch((error) => {
         console.error("Fetch error:", error);
       });
-      if (res.ok) {
-        this.$router.push("/Home");
-      } 
+      // if (res.ok) {
+      //   this.$router.push("/Home");
+      // } 
     },
   },
 };
