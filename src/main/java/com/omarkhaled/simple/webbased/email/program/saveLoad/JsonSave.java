@@ -7,7 +7,6 @@ import com.omarkhaled.simple.webbased.email.program.services.UserService;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.Map;
 
 public class JsonSave {
@@ -27,8 +26,8 @@ public class JsonSave {
     public void save(Path path){
         try {
             ObjectMapper mapper = new ObjectMapper();
-            Map<String, User> userDB = userService.getUsersDB();
-            mapper.writeValue(path.toFile(), userDB);
+            Map<String, User> usersDB = userService.getUsersDB();
+            mapper.writeValue(path.toFile(), usersDB);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

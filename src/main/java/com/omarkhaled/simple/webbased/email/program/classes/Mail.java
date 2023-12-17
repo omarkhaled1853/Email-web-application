@@ -1,7 +1,5 @@
 package com.omarkhaled.simple.webbased.email.program.classes;
 
-import com.omarkhaled.simple.webbased.email.program.interfaces.BuilderIf;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -58,7 +56,7 @@ public class Mail {
         return destroyOn;
     }
 
-    public static class Builder implements BuilderIf {
+    public static class MailBuilder implements com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder {
 
         Mail mail = new Mail();
         @Override
@@ -67,61 +65,61 @@ public class Mail {
         }
 
         @Override
-        public BuilderIf setId(String id) {
+        public com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder setId(String id) {
             mail.id = id;
             return this;
         }
 
         @Override
-        public BuilderIf setSender(String sender) {
+        public com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder setSender(String sender) {
             mail.sender = sender;
             return this;
         }
 
         @Override
-        public BuilderIf setReceiver(String receiver) {
+        public com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder setReceiver(String receiver) {
             mail.receiver = receiver;
             return this;
         }
 
         @Override
-        public BuilderIf setContent(String content) {
+        public com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder setContent(String content) {
             mail.content = content;
             return this;
         }
 
         @Override
-        public BuilderIf setSubject(String subject) {
+        public com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder setSubject(String subject) {
             mail.subject = subject;
             return this;
         }
 
         @Override
-        public BuilderIf setDate(LocalDateTime date) {
+        public com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder setDate(LocalDateTime date) {
             mail.date = date;
             return this;
         }
 
         @Override
-        public BuilderIf setAttachments(ArrayList<Attachment> attachments) {
+        public com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder setAttachments(ArrayList<Attachment> attachments) {
             mail.attachments = attachments;
             return this;
         }
 
         @Override
-        public BuilderIf setPriority(int priority) {
+        public com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder setPriority(int priority) {
             mail.priority = priority;
             return this;
         }
 
         @Override
-        public BuilderIf setCreateOn(long createOn) {
+        public com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder setCreateOn(long createOn) {
             mail.createOn = createOn;
             return this;
         }
 
         @Override
-        public BuilderIf setDestroyOn(long destroyOn) {
+        public com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder setDestroyOn(long destroyOn) {
             mail.destroyOn = destroyOn;
             return this;
         }

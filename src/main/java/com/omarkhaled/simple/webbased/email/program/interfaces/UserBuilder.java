@@ -5,10 +5,9 @@ import com.omarkhaled.simple.webbased.email.program.classes.User;
 public interface UserBuilder {
     User build();
 
-    UserBuilder setId(String id);
     UserBuilder setEmail(String email);
 
-    UserBuilder setName(String name);
+    UserBuilder setUserName(String userName);
 
     UserBuilder setPassword(String password);
 

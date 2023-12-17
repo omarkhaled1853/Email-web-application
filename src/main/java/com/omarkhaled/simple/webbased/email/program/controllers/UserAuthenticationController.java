@@ -1,7 +1,6 @@
 package com.omarkhaled.simple.webbased.email.program.controllers;
 
 import com.omarkhaled.simple.webbased.email.program.classes.User;
-import com.omarkhaled.simple.webbased.email.program.helperClasses.UserHelper;
 import com.omarkhaled.simple.webbased.email.program.saveLoad.JsonSave;
 import com.omarkhaled.simple.webbased.email.program.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,41 +23,36 @@ public class UserAuthenticationController {
     @Autowired
     public UserAuthenticationController(UserService userService) {
         this.userService = userService;
-        System.out.println(UUID.randomUUID().toString());
     }
 
     //add new user
     @PostMapping ("/signUp")
     public ResponseEntity<Boolean> create (@RequestBody User user) {
-//        JsonSave jsonSave = new JsonSave(userService);
-        String id = user.getId();
+        JsonSave jsonSave = new JsonSave(userService);
+        User user1 = userService.getUser(user.getEmail());
         //check for new user
-        if(id != null) throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
+        if(user1 != null) throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
 
-        User user1 = new User
+        user1 = new User
                 .Builder()
-                .setId(UUID.randomUUID().toString())
                 .setEmail(user.getEmail())
-                .setName(user.getName())
+                .setUserName(user.getUserName())
                 .setPassword(user.getPassword())
                 .build();
-        userService.mapping(user);
-        userService.addUser(user);
-//        jsonSave.save();
-
+        userService.addUser(user1);
+        jsonSave.save();
         return ResponseEntity.ok(true);
     }
 
     //get user
     @GetMapping ("/logIn")
     public ResponseEntity<Boolean> get (@RequestParam String email, @RequestParam String password){
-        UserHelper userHelper = new UserHelper();
-        userHelper.setEmail(email);
-        userHelper.setPassword(password);
-
-        String id = userService.getMapping(userHelper);
+         User user = userService.getUser(email);
         //user not found
-        if(id == null) throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if(user == null) throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        //user password not acceptable
+        if(!user.getPassword().equals(password)) throw new ResponseStatusException((HttpStatus.NOT_ACCEPTABLE));
 
         return ResponseEntity.ok(true);
     }

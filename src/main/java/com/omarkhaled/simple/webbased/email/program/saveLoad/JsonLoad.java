@@ -4,14 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.omarkhaled.simple.webbased.email.program.classes.User;
 import com.omarkhaled.simple.webbased.email.program.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Map;
 
 public class JsonLoad {
@@ -24,7 +22,8 @@ public class JsonLoad {
     //test
     public void load(){
         String path = "D:\\users.json";
-        load(Paths.get(path));
+        if(Paths.get(path).toFile().length() != 0)
+            load(Paths.get(path));
     }
 
     public void load(Path path){
@@ -32,8 +31,8 @@ public class JsonLoad {
             ObjectMapper mapper = new ObjectMapper();
             InputStream inputStream = new FileInputStream(path.toFile());
             TypeReference<Map<String, User>> typeReference = new TypeReference<Map<String, User>>(){};
-            Map<String, User> userDB = mapper.readValue(inputStream, typeReference);
-            userService.setUsersDB(userDB);
+            Map<String, User> usersDB = mapper.readValue(inputStream, typeReference);
+            userService.setUsersDB(usersDB);
             inputStream.close();
         } catch (IOException e) {
             throw new RuntimeException(e);

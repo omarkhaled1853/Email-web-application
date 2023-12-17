@@ -3,9 +3,8 @@ package com.omarkhaled.simple.webbased.email.program.classes;
 import com.omarkhaled.simple.webbased.email.program.interfaces.UserBuilder;
 
 public class User {
-    private String id;
     private String email;
-    private String name;
+    private String userName;
 
     private String password;
 
@@ -31,13 +30,14 @@ public class User {
 
 //    private Draft draft;
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
+
 
 //    public ArrayList<UserE_mail> getUserEMails() {
 //        return userEMails;
@@ -55,13 +55,6 @@ public class User {
         this.password = password;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
 //    public Inbox getInbox() {
 //        return inbox;
@@ -118,11 +111,6 @@ public class User {
             return user;
         }
 
-        @Override
-        public UserBuilder setId(String id) {
-            user.id=id;
-            return this;
-        }
 
         @Override
         public UserBuilder setEmail(String email) {
@@ -131,8 +119,8 @@ public class User {
         }
 
         @Override
-        public UserBuilder setName(String name) {
-           user.name=name;
+        public UserBuilder setUserName(String userName) {
+           user.userName=userName;
            return this;
         }
 
@@ -184,20 +172,4 @@ public class User {
 //            return this;
 //        }
     }
-
-//    @Override
-//    public String toString() {
-//        return "User{" +
-//                "name='" + name + '\'' +
-//                ", userEMails=" + userEMails +
-//                ", password='" + password + '\'' +
-//                ", id='" + id + '\'' +
-//                ", inbox=" + inbox +
-//                ", contacts=" + contacts +
-//                ", folders=" + folders +
-//                ", trash=" + trash +
-//                ", sent=" + sent +
-//                ", draft=" + draft +
-//                '}';
-//    }
 }
