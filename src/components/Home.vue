@@ -8,12 +8,12 @@
       <div class="title">Menu</div>
       <ul class="list-items">
         <router-link to=""></router-link>
-        <li><router-link to="">Inbox</router-link></li>
-        <li><router-link to="">Contacts</router-link></li>
-        <li><router-link to="">Folders</router-link></li>
-        <li><router-link to="">Draft</router-link></li>
-        <li><router-link to="">Sent</router-link></li>
-        <li><router-link to="">Trash</router-link></li>
+        <li><router-link to="/Home">Inbox</router-link></li>
+        <li><router-link to="/Contacts">Contacts</router-link></li>
+        <li><router-link to="/Folder">Folders</router-link></li>
+        <li><router-link to="/Draft">Draft</router-link></li>
+        <li><router-link to="/Sent">Sent</router-link></li>
+        <li><router-link to="/Trash">Trash</router-link></li>
         <div class="icons" style="diplay: flex; flex-direction: column">
           <h4 style="color: aliceblue">{{ user_name }}</h4>
           <h6 style="color: aliceblue">{{ email }}</h6>
@@ -23,7 +23,9 @@
   </div>
   <div class="content">
     <div class="header">
-      <h1 style="color: aliceblue; padding-top: 10px">C-Mail</h1>
+      <h1 style="color: aliceblue; padding-top: 10px">O3M-Mail</h1>
+      <button style="width:auto; font-size:large;  background-color:darkgrey;  height:40px;margin:auto; margin-left:30px ;" @click="reload()">reload</button>
+      <button style="width:auto; background-color:darkgrey; border-radius: 10px; font-size:large; height:50px;margin:auto;margin-left:800px ;" @click="setting()">Setting <i  style="font-size:40px" class="fa-solid fa-gear"></i></button>
     </div>
     <div class="b2">
       <div class="container">
@@ -158,6 +160,28 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <!-- ////////////////////////////////////////////////////////////////////////////// -->
+        <v-dialog v-model="sittingdialog" width="600" heigth="600"  dark hide-overlay persistent>
+          <v-card>
+            <v-card-title style="color:white; background-color:#3498db; padding:auto; text-align:center; font-size:35px">Setting  </v-card-title>
+            <v-card-text style="background-color:black">
+              <v-form>
+                <label style="font-size:20px; font:bold; color:#3498db;background-color:black">status</label>
+                <select id="menu" name="menu" v-model="status">
+                  <option value="online">online</option>
+                  <option value="in calling">in calling</option>
+                  <option value="busy">busy</option>
+                </select>
+                <br>
+                <v-btn style="width:auto;margin-top:15px; margin-left:10px" @click="logout()">LOgout<i style="font-size:25px"  class="fa-solid fa-right-from-bracket"></i></v-btn>
+                </v-form>
+            </v-card-text>
+            <v-card-actions style="background-color: black; display: flex; justify-content:right;">
+              <v-btn style="width: auto;" @click="applay()">Apply</v-btn>
+              <v-btn style="width: auto;" @click="closesitting()">Close</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       
         <div class="info">
          <table border="2px">
@@ -195,8 +219,6 @@
 </template>
 
 <script >
-
-
 import "@fortawesome/fontawesome-free/css/all.css"; // Import the styles
 export default {
   name: "HoMe",
@@ -216,6 +238,7 @@ export default {
       newfoldername:'',
       contacts:false,
       newname:'',
+      sittingdialog:false,
       massage:{
         from:'mohamed@gmail.com',
         to:'',
@@ -291,6 +314,24 @@ export default {
     closecontact(){
       this.contacts=false
     },
+    setting(){
+      this.sittingdialog=true
+    },
+    closesitting(){
+      this.sittingdialog=false
+    },
+    applay(){
+      JSON.stringify(localStorage.getItem("user-info")).status=this.status 
+      this.sittingdialog=false     
+    },
+    logout(){
+      localStorage.clear();
+      this.$router.push('/')
+    },
+    reload(){
+      location.reload();
+    }
+    ,
    async draft(){
         this.dialog=false
         await fetch("http://localhost:8080/draft",{
@@ -401,7 +442,7 @@ input[type="file"] {
   color: #3498db; 
   background-color: black;
   padding: 10px; 
-
+  
 }
 .new {
   width:auto;

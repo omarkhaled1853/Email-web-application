@@ -70,6 +70,7 @@ export default {
       person: {
         email: "",
         password: "",
+        status:'online'  //by default
       },
     };
   },
@@ -92,7 +93,7 @@ export default {
       this.person.email = this.email1;
       this.person.password = this.password1;
       localStorage.setItem("person-inf", JSON.stringify(this.person));
-   //   localStorage.setItem( JSON.stringify(this.person));
+      localStorage.setItem( JSON.stringify(this.person));
       let res = await fetch(`http://localhost8080?$email=${this.person.email},password=${this.person.password}`, {
         method: "GET",
       }).catch((error) => {
