@@ -5,6 +5,7 @@ import com.omarkhaled.simple.webbased.email.program.classes.Attachment;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public interface MailBuilder {
     Mail build();
@@ -15,7 +16,7 @@ public interface MailBuilder {
     MailBuilder setContent(String content);
     MailBuilder setSubject(String subject);
     MailBuilder setDate(LocalDateTime date);
-    MailBuilder setAttachments(ArrayList<Attachment> attachments);
+    MailBuilder setAttachments(List<Attachment> attachments);
     MailBuilder setPriority(int priority);
 
     MailBuilder setCreateOn(long createOn);

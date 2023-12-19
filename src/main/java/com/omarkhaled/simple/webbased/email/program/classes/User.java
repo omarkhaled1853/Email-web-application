@@ -2,110 +2,66 @@ package com.omarkhaled.simple.webbased.email.program.classes;
 
 import com.omarkhaled.simple.webbased.email.program.interfaces.UserBuilder;
 
+import java.util.List;
+import java.util.Map;
+
 public class User {
     private String email;
     private String userName;
 
     private String password;
 
+    private Map<String, Mail> inbox;
+
+    private Map<String, List<String>> contacts;
+    private Map<String, Mail> sent;
+
+    private Map<String, Mail> draft;
+
+    private Map<String, Mail> trash;
+
+    private Map<String, Map<String, Mail>> folders;
 
     public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    //    private Inbox inbox;
-    //    private ArrayList<UserE_mail>userEMails;
-
-
-
-//    private ArrayList<Contact> contacts;
-
-//    private ArrayList<Folder> folders;
-//    private Trash trash;
-//    private Sent sent;
-
-//    private Draft draft;
+    return email;
+}
 
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-
-//    public ArrayList<UserE_mail> getUserEMails() {
-//        return userEMails;
-//    }
-
-//    public void setUserEMails(ArrayList<UserE_mail> userEMails) {
-//        this.userEMails = userEMails;
-//    }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public Map<String, Mail> getInbox() {
+        return inbox;
     }
 
+    public Map<String, Mail> getSent() {
+        return sent;
+    }
 
-//    public Inbox getInbox() {
-//        return inbox;
-//    }
+    public Map<String, Mail> getDraft() {
+        return draft;
+    }
 
-//    public void setInbox(Inbox inbox) {
-//        this.inbox = inbox;
-//    }
+    public Map<String, Mail> getTrash() {
+        return trash;
+    }
 
-//    public ArrayList<Contact> getContacts() {
-//        return contacts;
-//    }
+    public Map<String, Map<String, Mail>> getFolders() {
+        return folders;
+    }
 
-//    public void setContacts(ArrayList<Contact> contacts) {
-//        this.contacts = contacts;
-//    }
-
-//    public ArrayList<Folder> getFolders() {
-//        return folders;
-//    }
-
-//    public void setFolders(ArrayList<Folder> folders) {
-//        this.folders = folders;
-//    }
-
-//    public Trash getTrash() {
-//        return trash;
-//    }
-
-//    public void setTrash(Trash trash) {
-//        this.trash = trash;
-//    }
-
-//    public Sent getSent() {
-//        return sent;
-//    }
-
-//    public void setSent(Sent sent) {
-//        this.sent = sent;
-//    }
-
-//    public Draft getDraft() {
-//        return draft;
-//    }
-
-//    public void setDraft(Draft draft) {
-//        this.draft = draft;
-//    }
+    public Map<String, List<String>> getContacts() {
+        return contacts;
+    }
 
     public static class Builder implements UserBuilder {
-          User user =new User();
+        User user =new User();
+
         @Override
         public User build() {
             return user;
@@ -129,47 +85,41 @@ public class User {
             user.password = password;
             return this;
         }
-//        @Override
-//        public UserBuilder set_email(ArrayList<UserE_mail> e_mails) {
-//            user.userEMails=e_mails;
-//            return this;
 
-//        }
+        @Override
+        public UserBuilder setInbox(Map<String, Mail> inbox) {
+            user.inbox = inbox;
+            return this;
+        }
 
-//        @Override
-//        public UserBuilder setInbox(ArrayList<Mail> inbox) {
-//           user.inbox.setInboxMails(inbox);
-//           return this;
-//        }
+        @Override
+        public UserBuilder setSent(Map<String, Mail> sent) {
+            user.sent = sent;
+            return this;
+        }
 
-//        @Override
-//        public UserBuilder setTrash(ArrayList<Mail> trash) {
-//            user.trash.setTrashMails(trash);
-//            return this;
-//        }
+        @Override
+        public UserBuilder setDraft(Map<String, Mail> draft) {
+            user.draft = draft;
+            return this;
+        }
 
-//        @Override
-//        public UserBuilder setSent(ArrayList<Mail> sent) {
-//            user.sent.setSentMails(sent);
-//            return this;
-//        }
+        @Override
+        public UserBuilder setTrash(Map<String, Mail> trash) {
+            user.trash = trash;
+            return this;
+        }
 
-//        @Override
-//        public UserBuilder setDraft(ArrayList<Mail> draft) {
-//            user.draft.setDrafts(draft);
-//            return this;
-//        }
+        @Override
+        public UserBuilder setFolders(Map<String, Map<String, Mail>> folders) {
+            user.folders = folders;
+            return this;
+        }
 
-//        @Override
-//        public UserBuilder setFolders(ArrayList<Folder> folders) {
-//            user.folders=folders;
-//            return null;
-//        }
-
-//        @Override
-//        public UserBuilder setContacts(ArrayList<Contact> contacts) {
-//            user.contacts=contacts;
-//            return this;
-//        }
+        @Override
+        public UserBuilder setContacts(Map<String, List<String>> contacts) {
+            user.contacts = contacts;
+            return this;
+        }
     }
 }

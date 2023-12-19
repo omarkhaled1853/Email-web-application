@@ -1,38 +1,42 @@
 package com.omarkhaled.simple.webbased.email.program.services;
 
-import com.omarkhaled.simple.webbased.email.program.classes.User;
+import com.omarkhaled.simple.webbased.email.program.classes.Mail;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class UserService {
-    //users data base
-    private Map<String, User> usersDB = new HashMap<>();
+    Map<String, Mail> mailDB = new HashMap<>();
+    Map<String, Mail> trashDB = new HashMap<>();
 
-    public Map<String, User> getUsersDB() {
-        return usersDB;
+    Map<String, Mail> draftDB = new HashMap<>();
+
+
+    public Map<String, Mail> getDraftDB() {
+        return draftDB;
     }
 
-    public void setUsersDB(Map<String, User> usersDB) {
-        this.usersDB = usersDB;
+    public void setDraftDB(Map<String, Mail> draftDB) {
+        this.draftDB = draftDB;
     }
 
-    //get users
-    public Collection<User> getUsers(){
-        return usersDB.values();
+    public Map<String, Mail> getTrashDB() {
+        return trashDB;
     }
 
-    //add user
-    public void addUser(User user){
-        usersDB.put(user.getEmail(), user);
+    public void setTrashDB(Map<String, Mail> trashDB) {
+        this.trashDB = trashDB;
     }
 
-    //get user
-    public User getUser(String id){
-        return usersDB.get(id);
+    public Map<String, Mail> getMailDB() {
+        return mailDB;
     }
+
+    public void setMailDB(Map<String, Mail> mailDB) {
+        this.mailDB = mailDB;
+    }
+
 
 }

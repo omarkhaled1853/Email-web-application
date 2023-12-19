@@ -2,7 +2,7 @@ package com.omarkhaled.simple.webbased.email.program.saveLoad;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.omarkhaled.simple.webbased.email.program.classes.User;
-import com.omarkhaled.simple.webbased.email.program.services.UserService;
+import com.omarkhaled.simple.webbased.email.program.services.UsersService;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -11,22 +11,22 @@ import java.util.Map;
 
 public class JsonSave {
 
-    private final UserService userService;
+    private final UsersService usersService;
 
-    public JsonSave(UserService userService) {
-        this.userService = userService;
+    public JsonSave(UsersService usersService) {
+        this.usersService = usersService;
     }
 
     //test
     public void save(){
-        String path = "D:\\users.json";
+        String path = "D:\\Mail Server\\users.json";
         save(Paths.get(path));
     }
 
     public void save(Path path){
         try {
             ObjectMapper mapper = new ObjectMapper();
-            Map<String, User> usersDB = userService.getUsersDB();
+            Map<String, User> usersDB = usersService.getUsersDB();
             mapper.writeValue(path.toFile(), usersDB);
         } catch (IOException e) {
             throw new RuntimeException(e);

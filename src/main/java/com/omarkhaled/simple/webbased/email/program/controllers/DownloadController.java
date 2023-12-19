@@ -4,12 +4,12 @@ import com.omarkhaled.simple.webbased.email.program.classes.Attachment;
 import com.omarkhaled.simple.webbased.email.program.services.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
+@RequestMapping
+@CrossOrigin
 public class DownloadController {
     private final AttachmentService attachmentService;
 

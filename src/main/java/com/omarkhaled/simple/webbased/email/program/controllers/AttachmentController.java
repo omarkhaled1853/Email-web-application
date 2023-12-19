@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.Collection;
 
 @RestController
+@RequestMapping
+@CrossOrigin
 public class AttachmentController {
 
     private final AttachmentService attachmentService;

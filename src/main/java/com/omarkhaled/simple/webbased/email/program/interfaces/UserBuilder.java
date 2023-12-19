@@ -1,6 +1,10 @@
 package com.omarkhaled.simple.webbased.email.program.interfaces;
 
+import com.omarkhaled.simple.webbased.email.program.classes.Mail;
 import com.omarkhaled.simple.webbased.email.program.classes.User;
+
+import java.util.List;
+import java.util.Map;
 
 public interface UserBuilder {
     User build();
@@ -11,19 +15,16 @@ public interface UserBuilder {
 
     UserBuilder setPassword(String password);
 
-//    UserBuilder setEmail(ArrayList<UserE_mail> e_mails);
+    UserBuilder setInbox(Map<String, Mail> inbox);
 
-//    UserBuilder setInbox(ArrayList<Mail> inbox);
-//    UserBuilder setTrash(ArrayList<Mail> trash);
-//    UserBuilder setSent(ArrayList<Mail> sent);
-//    UserBuilder setDraft(ArrayList<Mail> draft);
+    UserBuilder setSent(Map<String, Mail> sent);
 
-//    UserBuilder setFolders(ArrayList<Folder> folders);
+    UserBuilder setDraft(Map<String, Mail> draft);
 
-//    UserBuilder setContacts(ArrayList<Contact> contacts);
+    UserBuilder setTrash(Map<String, Mail> trash);
 
+    UserBuilder setFolders(Map<String, Map<String, Mail>> folders);
 
-
-
+    UserBuilder setContacts(Map<String, List<String>> contacts);
 
 }

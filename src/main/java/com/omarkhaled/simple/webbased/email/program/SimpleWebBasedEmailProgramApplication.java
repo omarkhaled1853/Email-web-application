@@ -9,5 +9,4 @@ public class SimpleWebBasedEmailProgramApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SimpleWebBasedEmailProgramApplication.class, args);
 	}
-
 }
