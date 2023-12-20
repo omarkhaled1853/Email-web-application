@@ -27,10 +27,10 @@ public class TrashController {
     }
 
     //trash mail
-    @DeleteMapping ("/mail/trash/{list}")
-    public void trash(@PathVariable String list) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        List<String> ids = mapper.readValue(list, List.class);
+    @DeleteMapping ("/mail/trash")
+    public void trash(@RequestParam List<String> ids) throws JsonProcessingException {
+//        ObjectMapper mapper = new ObjectMapper();
+//        List<String> ids = mapper.readValue(list, List.class);
         List<Mail> mails = sentService.deleteMails(ids);
 
         for (Mail mail : mails)
@@ -52,10 +52,10 @@ public class TrashController {
 //    }
 
     //delete trashed mail
-    @DeleteMapping ("/mail/delete/{list}")
-    public void delete(@PathVariable String list) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        List<String> ids = mapper.readValue(list, List.class);
+    @DeleteMapping ("/mail/delete")
+    public void delete(@RequestParam List<String> ids) throws JsonProcessingException {
+//        ObjectMapper mapper = new ObjectMapper();
+//        List<String> ids = mapper.readValue(list, List.class);
 
         List<Mail> mails = trashService.deleteMails(ids);
 

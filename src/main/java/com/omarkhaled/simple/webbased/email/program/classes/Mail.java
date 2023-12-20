@@ -3,7 +3,6 @@ package com.omarkhaled.simple.webbased.email.program.classes;
 import com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Mail {

@@ -26,8 +26,6 @@ public class SentController {
         this.usersService = usersService;
     }
 
-    @Autowired
-
 
     //get mails
     @GetMapping ("/mails")

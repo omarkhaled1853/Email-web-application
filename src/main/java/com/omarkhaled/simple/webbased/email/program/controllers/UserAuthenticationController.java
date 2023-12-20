@@ -1,8 +1,11 @@
 package com.omarkhaled.simple.webbased.email.program.controllers;
 
 import com.omarkhaled.simple.webbased.email.program.classes.User;
+import com.omarkhaled.simple.webbased.email.program.classes.UserAdapter;
+import com.omarkhaled.simple.webbased.email.program.classes.UsersAdapter;
+import com.omarkhaled.simple.webbased.email.program.interfaces.Adapter;
 import com.omarkhaled.simple.webbased.email.program.saveLoad.JsonLoad;
-import com.omarkhaled.simple.webbased.email.program.saveLoad.JsonSave;
+import com.omarkhaled.simple.webbased.email.program.saveLoad.SaveUsers;
 import com.omarkhaled.simple.webbased.email.program.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.util.Map;
 
 
 @RestController
@@ -25,22 +30,22 @@ public class UserAuthenticationController {
 
     //load users
     @GetMapping ("/users")
-    public void load (){
-        JsonLoad jsonLoad = new JsonLoad(usersService);
-        jsonLoad.load();
+    public void load () throws IOException {
+        Adapter<Map<String, User>> adapter = new UsersAdapter();
+        usersService.setUsersDB(adapter.load("users.json"));
     }
 
     //add new user
     @PostMapping ("/signUp")
-    public ResponseEntity<Boolean> create (@RequestBody User user) {
-        JsonSave jsonSave = new JsonSave(usersService);
+    public ResponseEntity<Boolean> create (@RequestBody User user) throws IOException {
+        Adapter<Map<String, User>> adapter = new UsersAdapter();
         User user1 = usersService.getUser(user.getEmail());
         //check for new user
         if(user1 != null) throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
 
         user1 = usersService.buildUser(user);
         usersService.addUser(user1);
-        jsonSave.save();
+        adapter.save(usersService.getUsersDB(), "users.json");
         return ResponseEntity.ok(true);
     }
 

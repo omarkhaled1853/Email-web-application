@@ -9,14 +9,14 @@ import java.util.*;
 
 @Service
 public class SentService {
-    Map<String, Mail> inboxDB = new HashMap<>();
+    Map<String, Mail> sentDB = new HashMap<>();
 
     public Map<String, Mail> getInboxDB() {
-        return inboxDB;
+        return sentDB;
     }
 
-    public void setInboxDB(Map<String, Mail> inboxDB) {
-        this.inboxDB = inboxDB;
+    public void setInboxDB(Map<String, Mail> sentDB) {
+        this.sentDB = sentDB;
     }
 
     //build mail
@@ -36,19 +36,19 @@ public class SentService {
 
     //get mails
     public Collection<Mail> getMails(){
-        return inboxDB.values();
+        return sentDB.values();
     }
 
     //add mail
     public void addMail(Mail mail){
-        inboxDB.put(mail.getId(), mail);
+        sentDB.put(mail.getId(), mail);
     }
 
     //delete mails from inbox
     public List<Mail> deleteMails(List<String> ids){
         List<Mail> mails = new ArrayList<>();
         for (String id : ids){
-            mails.add(inboxDB.remove(id));
+            mails.add(sentDB.remove(id));
         }
         return mails;
     }
