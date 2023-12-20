@@ -7,7 +7,6 @@ import com.omarkhaled.simple.webbased.email.program.interfaces.Adapter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
