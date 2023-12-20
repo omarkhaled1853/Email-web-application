@@ -15,7 +15,7 @@
                   :class="{ 'has-error': isuserInvalid }"
                 >
                   <input
-                    placeholder="username"
+                    placeholder="  username"
                     type="text"
                     id="typeuserNameX"
                     class="form-control form-control-lg"
@@ -32,7 +32,7 @@
                   :class="{ 'has-error': isEmailInvalid }"
                 >
                   <input
-                    placeholder="username@example.com"
+                    placeholder="  username@CSED.com"
                     type="email"
                     id="typeEmailX"
                     class="form-control form-control-lg"
@@ -47,7 +47,7 @@
 
                 <div class="form-outline form-white mb-4">
                   <input
-                    placeholder="Enter at least 8 characters"
+                    placeholder="  Enter at least 8 characters"
                     type="password"
                     id="typePasswordX"
                     class="form-control form-control-lg"
@@ -101,6 +101,7 @@ export default {
       var mail = document.getElementById("typeEmailX").value;
       console.log(mail);
       var patern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      var containsCSED = mail.includes("CSED");
       if (mail.match(patern) && this.userName1.trim() !== "" && this.password1 !== "") {
         this.signUp();
         this.isEmailInvalid = false;
@@ -112,7 +113,10 @@ export default {
         alert("Enter a valid email");
         console.log("Invalid email");
         this.isEmailInvalid = true;
-      }
+      }else if (!containsCSED) {
+        alert("Email must contain the pattern {CSED}");
+        this.isEmailInvalid = true;
+    }
 
     },
     async signUp() {

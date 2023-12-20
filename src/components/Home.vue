@@ -82,7 +82,8 @@
               <v-form>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
                 <br>
-                <input v-model="massage.to" style="width:600px" type="text" placeholder=" user@example.com"  id="toid">
+                <input v-model="massage.to" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
+                <span v-if="isToInvalid" style="color: red;">Invalid email format</span>
                 <br>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
                 <br>
@@ -219,7 +220,7 @@
 </template>
 
 <script >
-import "@fortawesome/fontawesome-free/css/all.css"; // Import the styles
+// import "@fortawesome/fontawesome-free/css/all.css"; // Import the styles
 export default {
   name: "HoMe",
   data() {
@@ -245,7 +246,7 @@ export default {
         Subject:'',
         content:'',
         priority:'',
-        attachments:'',
+        attachments:[],
       },
       emails: [
         {
@@ -288,7 +289,9 @@ export default {
       ],
     };
   },
-  // mounted() {
+  mounted() {
+    // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
+    //     this.$router.push('/');
   //   this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
   //   this.email = JSON.parse(localStorage.getItem("person-inf")).email;
   //   let res = fetch("http://localhost:8080/GetMails", {
@@ -296,6 +299,7 @@ export default {
   //   });
   //   this.emails = res.data;
   // },
+  },
   methods: {
     dia(){
       this.dialog=!this.dialog
@@ -317,6 +321,15 @@ export default {
     setting(){
       this.sittingdialog=true
     },
+    clear(){
+      this.massage.to=''
+      this.massage.from=''
+      this.massage.attachments=[]
+      this.massage.Subject=''
+      this.massage.content=''
+      this.massage.priority=''
+
+    },
     closesitting(){
       this.sittingdialog=false
     },
@@ -332,6 +345,10 @@ export default {
       location.reload();
     }
     ,
+    checkEmailValidity() {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      this.isToInvalid = !this.massage.to.match(emailPattern);
+    },
    async draft(){
         this.dialog=false
         await fetch("http://localhost:8080/draft",{
@@ -343,18 +360,12 @@ export default {
     },
    async send(){
       localStorage.setItem("massage",JSON.stringify(this.massage))
-      console.log(`File  name:`, this.massage.attachments.name);
-      for (let i = 0; i < this.massage.attachments.length; i++) {
-      console.log(`File ${i + 1} name:`, this.massage.attachments[i].name);
-      console.log(`File ${i + 1} size:`, this.massage.attachments[i].size);
-      // Add other properties as needed
-}
+      this.clear()
       this.dialog=false
-      await fetch("http://localhost:8080:send",{
+      await fetch("http://localhost:8080/send",{
         method:"POST",
         body:JSON.stringify(this.massage)
       })
-
     },
     handleFileChange(event) {
       console.log(event.target.files)
@@ -404,7 +415,7 @@ export default {
         body:this.choosen
       })
       let res= await fetch(`http://localhost:8080/ ?indcies=${this.choosen}`,{
-        method:"DELETE"
+        method:"DELETE",
      })
       this.emails=res.data
 

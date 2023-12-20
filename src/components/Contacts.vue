@@ -62,7 +62,7 @@
                 <button @click="sort()">sort</button>
               </div>
             </div>
-             <button class="new" @click="dia()">new massage</button>
+
           </div>
           <v-dialog v-model="dialog" width="800" heigth="850"  dark hide-overlay persistent>
             <v-card>
@@ -71,7 +71,7 @@
                 <v-form>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
                   <br>
-                  <input v-model="massage.to" style="width:600px" type="text" placeholder=" user@example.com"  id="toid">
+                  <input v-model="massage.to" style="width:600px" type="text" placeholder=" user@example.com" :value="this.itemmail"  id="toid" disabled>
                   <br>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
                   <br>
@@ -104,6 +104,30 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <!-- ///////////////////////////////////////////////////////////// -->
+          <v-dialog v-model="edit" width="600" heigth="600"  dark hide-overlay persistent>
+            <v-card>
+              <v-card-title style="color:white; background-color:#3498db; padding:auto; text-align:center; font-size:35px">edit<i class="fa-solid fa-pen-to-square"></i></v-card-title>
+              <v-card-text style="background-color:black">
+                <v-form>
+                    <label style="font-size:20px; font:bold; color:#3498db;background-color:black">new name:</label>
+                    <br>
+                    <input v-model="this.newname" style="width:600px" type="text" placeholder=" new name"   id="toid" >
+                    <br>
+                    <label style="font-size:20px; font:bold; color:#3498db;background-color:black">email:</label>
+                    <br>
+                    <input style="width:600px" type="text" :value="this.itemmail"  disabled>
+                   
+                  <v-btn style="width:auto;margin-top:15px; margin-left:10px" @click="save(this.itemmail)">Save</v-btn>
+                  </v-form>
+              </v-card-text>
+  
+              <v-card-actions style="background-color:black">
+               
+                <v-btn style="width:auto; margin-left:500px" @click="close_edit()">close</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
            <!-- // ///////////////////////////////////////////////////////-->
           <v-dialog v-model="sittingdialog" width="600" heigth="600"  dark hide-overlay persistent>
             <v-card>
@@ -126,21 +150,20 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-        
           <div class="info">
            <table border="2px">
             <tr>
-              <td>       </td>
+              <td>    </td>
               <td>Name</td>
               <td>Email address</td>
               <td>remove<i class="fa-solid fa-trash" style="font-size:15px; color:red"></i></td>
              
             </tr>
             <tr v-for="item in contacts" :key="item.email">
-              <td>    </td>
+              <td> <i @click="editf(item.email)" style="font-size:25px; color:#3498db;" class="fa-solid fa-pen-to-square"></i> <button class="new" @click="dia(item.email)">massage</button>    </td>
               <td>{{item.Name}}</td>
               <td>{{item.email}}</td>
-              <td><i @click="trash(item.index)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
+              <td><i @click="trash(item.email)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
             </tr>
            </table>
           </div>
@@ -155,7 +178,7 @@
   </template>
   
   <script >
-  import "@fortawesome/fontawesome-free/css/all.css"; // Import the styles
+//   import "@fortawesome/fontawesome-free/css/all.css"; // Import the styles
   export default {
     name: "ContaCts",
     data() {
@@ -163,9 +186,11 @@
         user_name: "mohamed hassan",
         email: "mohamed@gmail.com",
         dialog:false,
+        edit:false,
         search: '',
         searchby:'',
         sortby:'',
+        itemmail:'',
         itemindex:'',
         newfoldername:'',
         newname:'',
@@ -176,7 +201,7 @@
           Subject:'',
           content:'',
           priority:'',
-          attachments:'',
+          attachments:[],
         },
         contacts: [
           {
@@ -201,31 +226,20 @@
         ],
       };
     },
-    // mounted() {
+    mounted() {
+      // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
+      //   this.$router.push('/');
     //   this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
     //   this.email = JSON.parse(localStorage.getItem("person-inf")).email;
     //   let res = fetch("http://localhost:8080/GetMails", {
     //     method: "GET",
     //   });
-    //   this.emails = res.data;
-    // },
+    //   this.contacts = res.data;
+    },
     methods: {
-      dia(){
+      dia(itemmail){
         this.dialog=!this.dialog
-      },
-      folddialog(ind){
-        this.folder=true
-        this.itemindex=ind
-      },
-      closefolder(){
-        this.folder=false
-      },
-      contactdialog(ind){
-        this.contacts=true
-        this.itemindex=ind
-      },
-      closecontact(){
-        this.contacts=false
+        this.itemmail=itemmail
       },
       setting(){
         this.sittingdialog=true
@@ -243,107 +257,62 @@
       },
       reload(){
         location.reload();
-      }
-      ,
-     async draft(){
-          this.dialog=false
-          await fetch("http://localhost:8080/draft",{
-            method:"POST",
-            body:JSON.stringify(this.massage)
-          }).catch((error)=>{
-            console.log("Error",error)
-          });
+      },
+
+      close_edit(){
+        this.edit=false;
+      },
+      editf(it){
+        this.edit=true;
+        this.itemmail=it;
       },
      async send(){
         localStorage.setItem("massage",JSON.stringify(this.massage))
-        console.log(`File  name:`, this.massage.attachments.name);
-        for (let i = 0; i < this.massage.attachments.length; i++) {
-        console.log(`File ${i + 1} name:`, this.massage.attachments[i].name);
-        console.log(`File ${i + 1} size:`, this.massage.attachments[i].size);
-        // Add other properties as needed
-  }
         this.dialog=false
-        await fetch("http://localhost:8080:send",{
+        await fetch("http://localhost:8080/send",{
           method:"POST",
           body:JSON.stringify(this.massage)
         })
   
       },
-      handleFileChange(event) {
-        console.log(event.target.files)
-        this.massage.attachments = event.target.files;
-      },
+      ///search
      async srch(){
        let res=  await fetch(`http://localhost:8080/    ?searchby=${this.searchby},search=${this.search}`,{
           method:"GET"
      })
-      this.emails=res.data
-      },
-      async filter(){
-        let res =await fetch(`http://localhost:8080/    ?filterby=${this.filterby}`,{
-          method:"GET"
-     })
-      this.emails=res.data
+      this.contacts=res.data
       },
       async sort(){
        let res= await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
           method:"GET"
        })
-        this.emails=res.data
+        this.contacts=res.data
       },
+      //remove this contact 
      async trash(ind){
-        console.log("size "+this.choosen.length)
-        console.log(this.choosen[2])
-        console.warn(JSON.stringify(this.emails[ind]));
+        console.warn(JSON.stringify("delete "+ind));
         fetch("http://localhost:8080/trash",{
           method:"POST",
-          body:JSON.stringify(this.emails[ind])
+          body:JSON.stringify(ind)
         });
         let res= await fetch(`http://localhost:8080/ ?index=${ind}`,{
           method:"DELETE"
        })
-        this.emails=res.data
+        this.contacts=res.data
   
   
       },
-      async delet() {
-        if(this.choosen.length===0)
-        {
-          alert("please select email ")
-        }
-        else{
-        await fetch("http://localhost:8080/trash",{
-          method:"POST",
-          body:this.choosen
-        })
-        let res= await fetch(`http://localhost:8080/ ?indcies=${this.choosen}`,{
-          method:"DELETE"
-       })
-        this.emails=res.data
-  
-      }
-      },
-      async addtofolder(){
+      ///change name (edit)
+     async save(itm){
+        console.warn("edit-mail"+JSON.stringify(itm))
+        console.warn("new name"+JSON.stringify(this.newname))
+        this.edit=false;
         await fetch("http://localhost:8080/  ",
         {
-          method:"POST",
-          body:(this.emails[this.itemindex],this.foldername)
-        })
-      },
-     async createnew(){
-        await fetch("http://localhost:8080/  ",
-        {
-          method:"POST",
-          body:(this.emails[this.itemindex],this.newfoldername)
+          method:"PUT",
+          body:(this.newname,itm)
         })
   
-      },
-     async addtocontacte(){
-        await fetch("http://localhost:8080/  ",
-        {
-          method:"POST",
-          body:(this.emails[this.itemindex],this.newname)
-        })
       }
      }
   };
@@ -359,13 +328,13 @@
   }
   .new {
     width:auto;
-    height: 60px;
-    margin-top: 15px;
-    margin-left: 100px;
+    height: 25px;
+    margin-top: 5px;
+    margin-left: 15px;
     background-color:#3498db; /* Green background color */
     color: white; /* White text color */
     text-align: center; /* Center text */
-    font-size: 16px; /* Set font size */
+    font-size: 15px; /* Set font size */
     cursor: pointer; /* Add a pointer cursor on hover */
     transition: transform 0.3s ease-in-out; /* Add transition for scaling effect */
   }

@@ -20,6 +20,7 @@
                     id="typeEmailX"
                     class="form-control form-control-lg"
                     v-model="this.email1"
+                    placeholder="  user@CSED2.com"
                     required
                   />
                   <label class="form-label" for="typeEmailX" id="email"
@@ -33,6 +34,7 @@
                     id="typePasswordX"
                     class="form-control form-control-lg"
                     v-model="this.password1"
+                    placeholder="  password"
                     required
                   />
                   <label class="form-label" for="typePasswordX">Password</label>
