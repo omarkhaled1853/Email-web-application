@@ -1,11 +1,8 @@
 package com.omarkhaled.simple.webbased.email.program.controllers;
 
 import com.omarkhaled.simple.webbased.email.program.classes.User;
-import com.omarkhaled.simple.webbased.email.program.classes.UserAdapter;
 import com.omarkhaled.simple.webbased.email.program.classes.UsersAdapter;
 import com.omarkhaled.simple.webbased.email.program.interfaces.Adapter;
-import com.omarkhaled.simple.webbased.email.program.saveLoad.JsonLoad;
-import com.omarkhaled.simple.webbased.email.program.saveLoad.SaveUsers;
 import com.omarkhaled.simple.webbased.email.program.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
