@@ -49,15 +49,15 @@
                 <v-form>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
                   <br>
-                  <input v-model="massage.to" style="width:600px" type="text" placeholder=" user@example.com" :value="this.itemmail"  id="toid" disabled>
+                  <input v-model="massage.receiver" style="width:600px" type="text" placeholder=" user@example.com" :value="this.itemmail"  id="toid" disabled>
                   <br>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
                   <br>
-                  <input v-model="massage.from" style="width:600px" type="text" placeholder=" useremail" :value="email"  disabled>
+                  <input v-model="massage.sender" style="width:600px" type="text" placeholder=" useremail" :value="email"  disabled>
                   <br>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">Subject:</label>
                   <br>
-                  <input v-model="massage.Subject" style="width:600px" type="text" placeholder=" (0-30)characters">
+                  <input v-model="massage.subject" style="width:600px" type="text" placeholder=" (0-30)characters">
                   <br>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black ">contentent</label>
                   <br>
@@ -144,9 +144,9 @@
                 </tr>
                 <tr v-for="item in emails" :key="item.email">
                   <td>{{item.priority}}</td>
-                  <td>{{item.Sender}}</td>
+                  <td>{{item.sender}}</td>
                   <td>{{item.Date}}</td>
-                  <td> {{item.Subject}}</td>
+                  <td> {{item.subject}}</td>
                   <td>{{item.Content}}</td>
                   <td><a :href="item.attachments">{{ item.attachments }}</a></td>
                   <td><i @click="trash(item.index)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
@@ -177,12 +177,13 @@
         newname:'',        
         sittingdialog:false,
         massage:{
-          from:'mohamed@gmail.com',
-          to:'',
-          Subject:'',
-          content:'',
-          priority:'',
-        },
+        sender:'',
+        receiver:'',
+        subject:'',
+        content:'',
+        priority:'',
+        attachments:[],
+      },
         folders_name:[
             {
                 name:'work',
@@ -190,46 +191,14 @@
             {
                 name:'social'
             },
-        ],
-        emails:[
-        //     {
-        //   index:'0',
-        //   priority:5,
-        //   Sender:'mohamed@test.com',
-        //   Date:'14/12/2023 11:58',
-        //   Subject:'test',
-        //   Content:'test Home ',
-        //   attachments:'https://www.youtube.com/watch?v=QgA4ZVhoge0'
-          
-        // },
-        // {
-        //   index:'1',
-        //   priority:2,
-        //   Sender:'omar@test.com',
-        //   Date:'12/12/2023 11:58',
-        //   Subject:'test',
-        //   Content:'test Home ',
-        //   attachments:'no attachments'
-        // },
-        // {
-        //   index:'2',
-        //   priority:3,
-        //   Sender:'medo@test.com',
-        //   Date:'18/12/2023 11:58',
-        //   Subject:'test',
-        //   Content:'test Home ',
-        //   attachments:'no attachments'
-        // },
-        // {
-        //   index:'3',
-        //   priority:1,
-        //   Sender:'mahmoud@test.com',
-        //   Date:'18/12/2023 11:58',
-        //   Subject:'test',
-        //   Content:'test Home ',
-        //   attachments:'no attachments'
-        // }
-        ],
+            {
+                name:'family'
+            },
+            {
+                name:'frinds'
+            },
+            ],
+        emails:[],
       };
     },
     // mounted(){
@@ -267,12 +236,12 @@
         })
   
       },
-      ///search
      async select(){
-       let res=  await fetch(`http://localhost:8080/    ?file_selected=${this.selector}`,{
+     await fetch(`http://localhost:8080/    ?file_selected=${this.selector}`,{
           method:"GET"
-     })
-      this.emails=res.data
+     }).then(res=>res.json())
+     .then(data=>this.emails=data);
+      
       },
       //remove this contact 
      async trash(ind){
@@ -281,11 +250,11 @@
           method:"POST",
           body:JSON.stringify(ind)
         });
-        let res= await fetch(`http://localhost:8080/  ?index=${ind}`,{
+         await fetch(`http://localhost:8080/  ?index=${ind}`,{
           method:"DELETE"
-       })
-        this.emails=res.data
-      },
+       }).then(res=>res.json())
+     .then(data=>this.emails=data);
+     },
     
      }
   };

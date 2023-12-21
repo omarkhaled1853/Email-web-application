@@ -199,12 +199,13 @@
             </tr>
             <tr v-for="item in emails" :key="item.email">
               <td> <input v-model="choosen" :value="item.index" type="checkbox"></td>
+              <td>{{item.receiver}}</td>
+              <td>{{item.subject}}</td>
+              <td>{{item.content}}</td>
               <td>{{item.priority}}</td>
-              <td>{{item.Sender}}</td>
-              <td>{{item.Date}}</td>
-              <td> {{item.Subject}}</td>
-              <td>{{item.Content}}</td>
-              <td><a :href="item.attachments">{{ item.attachments }}</a></td>
+              <td>
+                <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
+              </td>
               <td><i @click="trash(item.index)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
             </tr>
            </table>
@@ -241,52 +242,14 @@
         newname:'',
         sittingdialog:false,
         massage:{
-          from:'mohamed@gmail.com',
-          to:'',
-          Subject:'',
-          content:'',
-          priority:'',
-          attachments:[],
-        },
-        emails: [
-          {
-            index:'0',
-            priority:5,
-            Sender:'mohamed@test.com',
-            Date:'14/12/2023 11:58',
-            Subject:'test',
-            Content:'test Home ',
-            attachments:'https://www.youtube.com/watch?v=QgA4ZVhoge0'
-            
-          },
-          {
-            index:'1',
-            priority:2,
-            Sender:'omar@test.com',
-            Date:'12/12/2023 11:58',
-            Subject:'test',
-            Content:'test Home ',
-            attachments:'no attachments'
-          },
-          {
-            index:'2',
-            priority:3,
-            Sender:'medo@test.com',
-            Date:'18/12/2023 11:58',
-            Subject:'test',
-            Content:'test Home ',
-            attachments:'no attachments'
-          },
-          {
-            index:'3',
-            priority:1,
-            Sender:'mahmoud@test.com',
-            Date:'18/12/2023 11:58',
-            Subject:'test',
-            Content:'test Home ',
-            attachments:'no attachments'
-          }
-        ],
+        sender:'',
+        receiver:'',
+        subject:'',
+        content:'',
+        priority:'',
+        attachments:[],
+      },
+        emails: [],
       };
     },
     mounted() {

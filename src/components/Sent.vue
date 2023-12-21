@@ -71,15 +71,15 @@
                 <v-form>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
                   <br>
-                  <input v-model="massage.to" style="width:600px" type="text" placeholder=" user@example.com" :value="this.itemmail"  id="toid" disabled>
+                  <input v-model="massage.receiver" style="width:600px" type="text" placeholder=" user@example.com" :value="this.itemmail"  id="toid" disabled>
                   <br>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
                   <br>
-                  <input v-model="massage.from" style="width:600px" type="text" placeholder=" useremail" :value="email"  disabled>
+                  <input v-model="massage.sender" style="width:600px" type="text" placeholder=" useremail" :value="email"  disabled>
                   <br>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">Subject:</label>
                   <br>
-                  <input v-model="massage.Subject" style="width:600px" type="text" placeholder=" (0-30)characters">
+                  <input v-model="massage.subject" style="width:600px" type="text" placeholder=" (0-30)characters">
                   <br>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black ">contentent</label>
                   <br>
@@ -137,15 +137,15 @@
               <td>remove<i class="fa-solid fa-trash" style="font-size:15px; color:red"></i></td>
              
             </tr>
-            <tr v-for="item in massages" :key="item.id">
-              <td>{{item.to}}</td>
+            <tr v-for="item in emails" :key="item.id">
+              <td>{{item.receiver}}</td>
               <td>{{item.subject}}</td>
               <td>{{item.content}}</td>
               <td>{{item.priority}}</td>
               <td>
                 <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
               </td>
-              <td><i @click="trash(item.email)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
+              <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
             </tr>
            </table>
           </div>
@@ -177,39 +177,27 @@
         newfoldername:'',
         newname:'',
         sittingdialog:false,
-        massages: [
-          {
-            to:'alisalah@csed.com',
-            subject:'test',
-            content:'tbaaaaa',
-            priority:5,
-            attachments:['mohamed  ','hassan']
-            
-          },
-          {
-            Name:'medoo',
-            email:'medo@test.com',
-          },
-          {
-            Name:'omar',
-            email:'omar@test.com',
-          },
-          {
-            Name:'mahmoud',
-            email:'hoda@test.com',
-          }
-        ],
+        massage:{
+        sender:'',
+        receiver:'',
+        subject:'',
+        content:'',
+        priority:'',
+        attachments:[],
+      },
+        emails: [],
       };
     },
     mounted() {
-      // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
-      //   this.$router.push('/');
-    //   this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
-    //   this.email = JSON.parse(localStorage.getItem("person-inf")).email;
-    //   let res = fetch("http://localhost:8080/GetSebts", {
-    //     method: "GET",
-    //   });
-    //   this.massages = res.data;
+      // // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
+      // //   this.$router.push('/');
+      // this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+      // this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+      // fetch("http://localhost:8080/GetSents", {
+      //   method: "GET",
+      // }).then(res=>res.json())
+      // .then(data=>this.emails=data);
+      
     },
     methods: {
       dia(itemmail){
@@ -255,13 +243,13 @@
        let res=  await fetch(`http://localhost:8080/    ?searchby=${this.searchby},search=${this.search}`,{
           method:"GET"
      })
-      this.massages=res.data
+      this.emails=res.data
       },
       async sort(){
        let res= await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
           method:"GET"
        })
-        this.massages=res.data
+        this.emails=res.data
       },
       //remove this contact 
      async trash(ind){
@@ -270,11 +258,11 @@
           method:"POST",
           body:JSON.stringify(ind)
         });
-        let res= await fetch(`http://localhost:8080/ ?index=${ind}`,{
+        await fetch(`http://localhost:8080/ ?index=${ind}`,{
           method:"DELETE"
-       })
-        this.massages=res.data
-  
+       }).then(res=>res.json())
+     .then(data=>this.emails=data);
+     
   
       },
       ///change name (edit)

@@ -39,7 +39,7 @@
                 <option>Sender</option>
                 <option>Receviers</option>
                 <option>Importancy</option>
-                <option>Subject</option>
+                <option>subject</option>
                 <option>Body</option>
                 <option>Attachments</option>
               </select>
@@ -54,7 +54,7 @@
                 <option>Sender</option>
                 <option>Receviers</option>
                 <option>Importancy</option>
-                <option>Subject</option>
+                <option>subject</option>
                 <option>Body</option>
                 <option>Attachments</option>
               </select>
@@ -67,7 +67,7 @@
               <select v-model="filterby" id="filterid" name="filter">
                 <option>Filter by</option>
                 <option>sender</option>
-                <option>Subject</option>
+                <option>subject</option>
               </select>
               <button @click="filter()">filter</button>
             </div>
@@ -82,16 +82,16 @@
               <v-form>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
                 <br>
-                <input v-model="massage.to" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
+                <input v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
                 <span v-if="isToInvalid" style="color: red;">Invalid email format</span>
                 <br>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
                 <br>
-                <input v-model="massage.from" style="width:600px" type="text" placeholder=" useremail" :value="email"  disabled>
+                <input v-model="massage.sender" style="width:600px" type="text" placeholder=" useremail" :value="email"  disabled>
                 <br>
-                <label style="font-size:20px; font:bold; color:#3498db;background-color:black">Subject:</label>
+                <label style="font-size:20px; font:bold; color:#3498db;background-color:black">subject:</label>
                 <br>
-                <input v-model="massage.Subject" style="width:600px" type="text" placeholder=" (0-30)characters">
+                <input v-model="massage.subject" style="width:600px" type="text" placeholder=" (0-30)characters">
                 <br>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black ">contentent</label>
                 <br>
@@ -122,7 +122,7 @@
             <v-card-title style="color:white; background-color:#3498db; padding:auto; text-align:center; font-size:35px">Folders<i style="font-size:50px; margin-left:5px;" class="fa-solid fa-folder-plus"> </i></v-card-title>
             <v-card-text style="background-color:black">
               <v-form>
-                <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">select from folders:</label>
+                <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">select sender folders:</label>
                 <select id="menu" name="menu" v-model="foldername">
                   <option value="Social">Social</option>
                   <option value="Work">Work</option>
@@ -152,7 +152,7 @@
                 <input v-model="newname" type="text">
                 <br>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">email:</label>
-                <input :value="this.emails[this.itemindex].Sender" style="width:400px" type="text"   disabled>
+                <input :value="this.emails[this.itemid].sender" style="width:400px" type="text"   disabled>
                 <v-btn style="width:auto;margin-top:15px; margin-left:10px" @click="addtocontacte()">add to contacts</v-btn>
                 </v-form>
             </v-card-text>
@@ -174,7 +174,7 @@
                   <option value="busy">busy</option>
                 </select>
                 <br>
-                <v-btn style="width:auto;margin-top:15px; margin-left:10px" @click="logout()">LOgout<i style="font-size:25px"  class="fa-solid fa-right-from-bracket"></i></v-btn>
+                <v-btn style="width:auto;margin-top:15px; margin-left:10px" @click="logout()">LOgout<i style="font-size:25px"  class="fa-solid fa-right-sender-bracket"></i></v-btn>
                 </v-form>
             </v-card-text>
             <v-card-actions style="background-color: black; display: flex; justify-content:right;">
@@ -191,21 +191,22 @@
             <td>priority</td>
             <td>Sender</td>
             <td>Date</td>
-            <td> Subject</td>
+            <td> subject</td>
             <td>Content</td>
             <td>Attachments</td>
             <td>Move to trash <i class="fa-solid fa-trash" style="font-size:15px; color:red"></i></td>
            
           </tr>
           <tr v-for="item in emails" :key="item.email">
-            <td> <input v-model="choosen" :value="item.index" type="checkbox">   <i @click="folddialog(item.index)" class="fa-solid fa-folder-plus"> </i> <i @click="contactdialog(item.index)" class="fa-solid fa-user-plus"></i>   </td>
+            <td> <input v-model="choosen" :value="item.index" type="checkbox">   <i @click="folddialog(item.id)" class="fa-solid fa-folder-plus"> </i> <i @click="contactdialog(item.id)" class="fa-solid fa-user-plus"></i>   </td>
             <td>{{item.priority}}</td>
-            <td>{{item.Sender}}</td>
+            <td>{{item.sender}}</td>
             <td>{{item.Date}}</td>
-            <td> {{item.Subject}}</td>
-            <td>{{item.Content}}</td>
-            <td><a :href="item.attachments">{{ item.attachments }}</a></td>
-            <td><i @click="trash(item.index)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
+            <td> {{item.subject}}</td>
+            <td>{{item.content}}</td><td>
+              <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
+            </td>
+            <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
           </tr>
          </table>
         </div>
@@ -225,8 +226,8 @@ export default {
   name: "HoMe",
   data() {
     return {
-      user_name: "mohamed hassan",
-      email: "mohamed@gmail.com",
+      user_name:'' ,
+      email: '',
       dialog:false,
       search: '',
       searchby:'',
@@ -235,56 +236,28 @@ export default {
       choosen:[],
       folder:false,
       foldername:'',
-      itemindex:'',
+      itemid:'',
       newfoldername:'',
       contacts:false,
       newname:'',
       sittingdialog:false,
       massage:{
-        from:'mohamed@gmail.com',
-        to:'',
-        Subject:'',
+        sender:'',
+        receiver:'',
+        subject:'',
         content:'',
         priority:'',
         attachments:[],
       },
       emails: [
         {
-          index:'0',
-          priority:5,
-          Sender:'mohamed@test.com',
-          Date:'14/12/2023 11:58',
-          Subject:'test',
-          Content:'test Home ',
-          attachments:'https://www.youtube.com/watch?v=QgA4ZVhoge0'
-          
-        },
-        {
-          index:'1',
-          priority:2,
-          Sender:'omar@test.com',
-          Date:'12/12/2023 11:58',
-          Subject:'test',
-          Content:'test Home ',
-          attachments:'no attachments'
-        },
-        {
-          index:'2',
-          priority:3,
-          Sender:'medo@test.com',
-          Date:'18/12/2023 11:58',
-          Subject:'test',
-          Content:'test Home ',
-          attachments:'no attachments'
-        },
-        {
-          index:'3',
-          priority:1,
-          Sender:'mahmoud@test.com',
-          Date:'18/12/2023 11:58',
-          Subject:'test',
-          Content:'test Home ',
-          attachments:'no attachments'
+          id:0,
+          priority:10,
+          sender:'ali',
+          subject:'test',
+          Date:'23/12/2002',
+          content:'this test',
+          attachments:['no attachments']
         }
       ],
     };
@@ -292,13 +265,12 @@ export default {
   mounted() {
     // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
     //     this.$router.push('/');
-  //   this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
-  //   this.email = JSON.parse(localStorage.getItem("person-inf")).email;
-  //   let res = fetch("http://localhost:8080/GetMails", {
-  //     method: "GET",
-  //   });
-  //   this.emails = res.data;
-  // },
+    // this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+    // this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+    // fetch(`http://localhost:8080/GetMails?email=${this.email}`, {
+    //   method: "GET",
+    // }).then(res => res.json())
+    // .then(data =>this.massages=data);
   },
   methods: {
     dia(){
@@ -306,14 +278,14 @@ export default {
     },
     folddialog(ind){
       this.folder=true
-      this.itemindex=ind
+      this.itemid=ind
     },
     closefolder(){
       this.folder=false
     },
     contactdialog(ind){
       this.contacts=true
-      this.itemindex=ind
+      this.itemid=ind
     },
     closecontact(){
       this.contacts=false
@@ -322,10 +294,10 @@ export default {
       this.sittingdialog=true
     },
     clear(){
-      this.massage.to=''
-      this.massage.from=''
+      this.massage.receiver=''
+      this.massage.sender=''
       this.massage.attachments=[]
-      this.massage.Subject=''
+      this.massage.subject=''
       this.massage.content=''
       this.massage.priority=''
 
@@ -347,7 +319,7 @@ export default {
     ,
     checkEmailValidity() {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      this.isToInvalid = !this.massage.to.match(emailPattern);
+      this.isToInvalid = !this.massage.receiver.match(emailPattern);
     },
    async draft(){
         this.dialog=false
@@ -397,7 +369,7 @@ export default {
         method:"POST",
         body:JSON.stringify(this.emails[ind])
       });
-      let res= await fetch(`http://localhost:8080/ ?index=${ind}`,{
+      let res= await fetch(`http://localhost:8080/ ?id=${ind}`,{
         method:"DELETE"
      })
       this.emails=res.data
@@ -425,14 +397,14 @@ export default {
       await fetch("http://localhost:8080/  ",
       {
         method:"POST",
-        body:(this.emails[this.itemindex],this.foldername)
+        body:(this.emails[this.itemid],this.foldername)
       })
     },
    async createnew(){
       await fetch("http://localhost:8080/  ",
       {
         method:"POST",
-        body:(this.emails[this.itemindex],this.newfoldername)
+        body:(this.emails[this.itemid],this.newfoldername)
       })
 
     },
@@ -440,7 +412,7 @@ export default {
       await fetch("http://localhost:8080/  ",
       {
         method:"POST",
-        body:(this.emails[this.itemindex],this.newname)
+        body:(this.emails[this.itemid],this.newname)
       })
     }
    }

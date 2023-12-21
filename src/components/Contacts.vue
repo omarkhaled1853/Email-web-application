@@ -71,15 +71,15 @@
                 <v-form>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
                   <br>
-                  <input v-model="massage.to" style="width:600px" type="text" placeholder=" user@example.com" :value="this.itemmail"  id="toid" disabled>
+                  <input v-model="massage.receiver" style="width:600px" type="text" placeholder=" user@example.com" :value="this.itemmail"  id="toid" disabled>
                   <br>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
                   <br>
-                  <input v-model="massage.from" style="width:600px" type="text" placeholder=" useremail" :value="email"  disabled>
+                  <input v-model="massage.sender" style="width:600px" type="text" placeholder=" useremail" :value="email"  disabled>
                   <br>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">Subject:</label>
                   <br>
-                  <input v-model="massage.Subject" style="width:600px" type="text" placeholder=" (0-30)characters">
+                  <input v-model="massage.subject" style="width:600px" type="text" placeholder=" (0-30)characters">
                   <br>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black ">contentent</label>
                   <br>
@@ -196,12 +196,12 @@
         newname:'',
         sittingdialog:false,
         massage:{
-          from:'mohamed@gmail.com',
-          to:'',
-          Subject:'',
-          content:'',
-          priority:'',
-          attachments:[],
+        sender:'',
+        receiver:'',
+        subject:'',
+        content:'',
+        priority:'',
+        attachments:[],
         },
         contacts: [
           {
@@ -231,10 +231,10 @@
       //   this.$router.push('/');
     //   this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
     //   this.email = JSON.parse(localStorage.getItem("person-inf")).email;
-    //   let res = fetch("http://localhost:8080/GetMails", {
+    //   fetch("http://localhost:8080/GetMails", {
     //     method: "GET",
-    //   });
-    //   this.contacts = res.data;
+      // }).then(res=>res.json())
+      //     .then(data=>this.contacts=data);
     },
     methods: {
       dia(itemmail){
@@ -277,16 +277,16 @@
       },
       ///search
      async srch(){
-       let res=  await fetch(`http://localhost:8080/    ?searchby=${this.searchby},search=${this.search}`,{
+       await fetch(`http://localhost:8080/    ?searchby=${this.searchby},search=${this.search}`,{
           method:"GET"
-     })
-      this.contacts=res.data
+     }).then(res=>res.json())
+          .then(data=>this.contacts=data);
       },
       async sort(){
-       let res= await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
+        await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
           method:"GET"
-       })
-        this.contacts=res.data
+       }).then(res=>res.json())
+          .then(data=>this.contacts=data);
       },
       //remove this contact 
      async trash(ind){
@@ -295,11 +295,10 @@
           method:"POST",
           body:JSON.stringify(ind)
         });
-        let res= await fetch(`http://localhost:8080/ ?index=${ind}`,{
+         await fetch(`http://localhost:8080/ ?index=${ind}`,{
           method:"DELETE"
-       })
-        this.contacts=res.data
-  
+       }).then(res=>res.json())
+        .then(data=>this.contacts=data);
   
       },
       ///change name (edit)
