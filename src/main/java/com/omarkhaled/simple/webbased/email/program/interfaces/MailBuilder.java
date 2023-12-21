@@ -15,7 +15,7 @@ public interface MailBuilder {
     MailBuilder setReceiver(String receiver);
     MailBuilder setContent(String content);
     MailBuilder setSubject(String subject);
-    MailBuilder setDate(LocalDateTime date);
+    MailBuilder setDate(String date);
     MailBuilder setAttachments(List<Attachment> attachments);
     MailBuilder setPriority(int priority);
 

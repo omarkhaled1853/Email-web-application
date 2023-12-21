@@ -29,8 +29,13 @@ public class DraftService {
                 .setContent(mail.getContent())
                 .setAttachments(mail.getAttachments())
                 .setPriority(mail.getPriority())
-                .setDate(LocalDateTime.now())
+                .setDate(LocalDateTime.now().toString())
                 .build();
+    }
+
+    //get mails
+    public Collection<Mail> getMails(){
+        return draftDB.values();
     }
 
     //draft mail

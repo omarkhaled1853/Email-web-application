@@ -22,6 +22,22 @@ public class User {
 
     private Map<String, Map<String, Mail>> folders;
 
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "email='" + email + '\'' +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", inbox=" + inbox +
+                ", contacts=" + contacts +
+                ", sent=" + sent +
+                ", draft=" + draft +
+                ", trash=" + trash +
+                ", folders=" + folders +
+                '}';
+    }
+
     public String getEmail() {
     return email;
 }
@@ -58,6 +74,7 @@ public class User {
     public Map<String, List<String>> getContacts() {
         return contacts;
     }
+
 
     public static class Builder implements UserBuilder {
         User user =new User();

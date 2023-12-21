@@ -11,7 +11,7 @@ public class Mail {
     private String receiver;
     private String subject;
     private String content;
-    private LocalDateTime date;
+    private String date;
     private int priority;
     private List<Attachment> attachments;
 
@@ -52,7 +52,7 @@ public class Mail {
         return content;
     }
 
-    public LocalDateTime getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -111,7 +111,7 @@ public class Mail {
         }
 
         @Override
-        public MailBuilder setDate(LocalDateTime date) {
+        public MailBuilder setDate(String date) {
             mail.date = date;
             return this;
         }

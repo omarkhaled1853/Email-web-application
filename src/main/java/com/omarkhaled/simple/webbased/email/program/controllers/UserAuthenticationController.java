@@ -1,11 +1,8 @@
 package com.omarkhaled.simple.webbased.email.program.controllers;
 
 import com.omarkhaled.simple.webbased.email.program.classes.User;
-import com.omarkhaled.simple.webbased.email.program.classes.UserAdapter;
 import com.omarkhaled.simple.webbased.email.program.classes.UsersAdapter;
 import com.omarkhaled.simple.webbased.email.program.interfaces.Adapter;
-import com.omarkhaled.simple.webbased.email.program.saveLoad.JsonLoad;
-import com.omarkhaled.simple.webbased.email.program.saveLoad.SaveUsers;
 import com.omarkhaled.simple.webbased.email.program.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,13 +49,12 @@ public class UserAuthenticationController {
     //get user
     @GetMapping ("/logIn")
     public ResponseEntity<Boolean> get (@RequestParam String email, @RequestParam String password){
-         User user = usersService.getUser(email);
+        User user = usersService.getUser(email);
         //user not found
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         //user password not acceptable
         if(!user.getPassword().equals(password)) throw new ResponseStatusException((HttpStatus.NOT_ACCEPTABLE));
-
         return ResponseEntity.ok(true);
     }
 

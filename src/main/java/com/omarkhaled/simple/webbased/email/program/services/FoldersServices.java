@@ -3,6 +3,7 @@ package com.omarkhaled.simple.webbased.email.program.services;
 import com.omarkhaled.simple.webbased.email.program.classes.Mail;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,11 @@ public class FoldersServices {
 
     public void setFoldersDB(Map<String, Map<String, Mail>> foldersDB) {
         this.foldersDB = foldersDB;
+    }
+
+    //get folder mails
+    public Collection<Mail> getMails(String folderName){
+        return foldersDB.get(folderName).values();
     }
 
     //delete folder

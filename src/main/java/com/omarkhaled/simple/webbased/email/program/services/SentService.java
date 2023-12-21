@@ -11,11 +11,11 @@ import java.util.*;
 public class SentService {
     Map<String, Mail> sentDB = new HashMap<>();
 
-    public Map<String, Mail> getInboxDB() {
+    public Map<String, Mail> getSentDB() {
         return sentDB;
     }
 
-    public void setInboxDB(Map<String, Mail> sentDB) {
+    public void setSentDB(Map<String, Mail> sentDB) {
         this.sentDB = sentDB;
     }
 
@@ -30,7 +30,7 @@ public class SentService {
                 .setContent(mail.getContent())
                 .setAttachments(mail.getAttachments())
                 .setPriority(mail.getPriority())
-                .setDate(LocalDateTime.now())
+                .setDate(LocalDateTime.now().toString())
                 .build();
     }
 
@@ -44,7 +44,7 @@ public class SentService {
         sentDB.put(mail.getId(), mail);
     }
 
-    //delete mails from inbox
+    //delete mails
     public List<Mail> deleteMails(List<String> ids){
         List<Mail> mails = new ArrayList<>();
         for (String id : ids){
@@ -52,4 +52,6 @@ public class SentService {
         }
         return mails;
     }
+
+
 }

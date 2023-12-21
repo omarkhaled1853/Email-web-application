@@ -19,21 +19,9 @@ public class TrashService {
         this.trashDB = trashDB;
     }
 
-    public List<Mail> buildMails(List<Mail> mails){
-        mails.replaceAll(mail -> new Mail
-                .Builder()
-                .setId(mail.getId())
-                .setReceiver(mail.getReceiver())
-                .setSender(mail.getSender())
-                .setSubject(mail.getSubject())
-                .setContent(mail.getContent())
-                .setAttachments(mail.getAttachments())
-                .setPriority(mail.getPriority())
-                .setDate(LocalDateTime.now())
-                .setCreateOn(Clock.systemDefaultZone().millis())
-                .setDestroyOn((long) (Clock.systemDefaultZone().millis() + 2.592 * 1e9))
-                .build());
-        return mails;
+    //get trashed mails
+    public Collection<Mail> getMails(){
+        return trashDB.values();
     }
 
     //add mail
