@@ -72,6 +72,7 @@ public class UsersService {
         User user = usersDB.get(id);
         user.getSent().clear();
         user.getSent().putAll(updatedSent);
+        usersDB.remove(id);
         usersDB.put(user.getEmail(), user);
     }
 

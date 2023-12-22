@@ -34,7 +34,7 @@ public class SentController {
     @GetMapping ("/mails/sent")
     public Collection<Mail> getSent(@RequestParam String id){
 
-        System.out.println(id);
+//        System.out.println(id);
 
         User user = usersService.getUser(id);
 
@@ -42,26 +42,36 @@ public class SentController {
 
         sentService.setSentDB(user.getSent());
 
+        System.out.println(sentService.getMails());
+
         return sentService.getMails();
     }
 
     //add mail
     @PostMapping ("/mail/sent/create")
     public ResponseEntity<Boolean> create(@RequestBody Mail mail){
+
+        System.out.println(mail);
+        System.out.println("=====================================================");
+
         User receiver = usersService.getUser(mail.getReceiver());
 
         if(receiver == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         Mail mail1 = sentService.buildMail(mail);
-        sentService.addMail(mail1);
+//        sentService.addMail(mail1);
 
         //update sent sender
-        usersService.updateSent(mail.getSender(), sentService.getSentDB());
+        usersService.getUsersDB().get(mail.getSender()).getSent().put(mail1.getSender(), mail1);
 
         //update inbox receiver
-//        usersService.addToInbox(receiver.getEmail(), mail);
 
         usersService.getUsersDB().get(receiver.getEmail()).getInbox().put(mail1.getId(), mail1);
+
+
+
+        System.out.println(usersService.getUsersDB().get(receiver.getEmail()).getInbox());
+        System.out.println("=====================================================");
 
         return ResponseEntity.ok(true);
     }

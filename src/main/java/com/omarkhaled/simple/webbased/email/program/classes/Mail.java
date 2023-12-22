@@ -18,21 +18,21 @@ public class Mail {
     private long createOn;
     private long destroyOn;
 
-//    @Override
-//    public String toString() {
-//        return "Mail{" +
-//                "id='" + id + '\'' +
-//                ", sender='" + sender + '\'' +
-//                ", receiver='" + receiver + '\'' +
-//                ", content='" + content + '\'' +
-//                ", subject='" + subject + '\'' +
-//                ", date=" + date +
-//                ", attachments=" + attachments +
-//                ", priority=" + priority +
-//                ", createOn=" + createOn +
-//                ", destroyOn=" + destroyOn +
-//                '}';
-//    }
+    @Override
+    public String toString() {
+        return "Mail{" +
+                "id='" + id + '\'' +
+                ", sender='" + sender + '\'' +
+                ", receiver='" + receiver + '\'' +
+                ", content='" + content + '\'' +
+                ", subject='" + subject + '\'' +
+                ", date=" + date +
+                ", attachments=" + attachments +
+                ", priority=" + priority +
+                ", createOn=" + createOn +
+                ", destroyOn=" + destroyOn +
+                '}';
+    }
 
     public String getId() {return id;}
 
