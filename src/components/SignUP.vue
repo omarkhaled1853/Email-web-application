@@ -125,15 +125,19 @@ export default {
       this.person.password = this.password1;
       // localStorage.setItem("person-inf", JSON.stringify(this.person));
       console.log("omar")
-      await fetch("http://localhost:8080/signUp", {
+      let res = await fetch("http://localhost:8080/signUp", {
         method: "POST",
+        headers: {
+          Accept : "application/json",
+          "content-type" : "application/json"
+        },
         body: JSON.stringify(this.person),
       }).catch((error) => {
         console.error("Fetch error:", error);
       });
-      // if (res.ok) {
-      //   this.$router.push("/Home");
-      // } 
+      if (res.ok) {
+        this.$router.push("/Home");
+      } 
     },
   },
 };

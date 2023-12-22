@@ -165,8 +165,8 @@
     name: "SeNt",
     data() {
       return {
-        user_name: "mohamed hassan",
-        email: "mohamed@gmail.com",
+        user_name: "",
+        email: "",
         dialog:false,
         edit:false,
         search: '',
@@ -189,15 +189,15 @@
       };
     },
     mounted() {
-      // // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
-      // //   this.$router.push('/');
-      // this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
-      // this.email = JSON.parse(localStorage.getItem("person-inf")).email;
-      // fetch("http://localhost:8080/GetSents", {
-      //   method: "GET",
-      // }).then(res=>res.json())
-      // .then(data=>this.emails=data);
-      
+      // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
+      //   this.$router.push('/');
+      this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+      this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+      this.massage.sender = this.email
+      fetch(`http://localhost:8080/mails/sent?id=${this.email}`, {
+        method: "GET",
+      }).then(res=>res.json())
+      .then(data=>this.emails=data);
     },
     methods: {
       dia(itemmail){

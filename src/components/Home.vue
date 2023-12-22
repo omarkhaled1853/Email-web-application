@@ -87,7 +87,7 @@
                 <br>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
                 <br>
-                <input v-model="massage.sender" style="width:600px" type="text" placeholder=" useremail" :value="email"  disabled>
+                <input style="width:600px" type="text" placeholder=" useremail" :value="this.email"  disabled>
                 <br>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">subject:</label>
                 <br>
@@ -201,8 +201,8 @@
             <td> <input v-model="choosen" :value="item.index" type="checkbox">   <i @click="folddialog(item.id)" class="fa-solid fa-folder-plus"> </i> <i @click="contactdialog(item.id)" class="fa-solid fa-user-plus"></i>   </td>
             <td>{{item.priority}}</td>
             <td>{{item.sender}}</td>
-            <td>{{item.Date}}</td>
-            <td> {{item.subject}}</td>
+            <td>{{item.date}}</td>
+            <td>{{item.subject}}</td>
             <td>{{item.content}}</td><td>
               <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
             </td>
@@ -242,35 +242,27 @@ export default {
       newname:'',
       sittingdialog:false,
       massage:{
-        sender:'',
+        sender: '',
         receiver:'',
         subject:'',
         content:'',
         priority:'',
         attachments:[],
       },
-      emails: [
-        {
-          id:0,
-          priority:10,
-          sender:'ali',
-          subject:'test',
-          Date:'23/12/2002',
-          content:'this test',
-          attachments:['no attachments']
-        }
-      ],
+      emails: [],
     };
   },
   mounted() {
     // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
     //     this.$router.push('/');
-    // this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
-    // this.email = JSON.parse(localStorage.getItem("person-inf")).email;
-    // fetch(`http://localhost:8080/GetMails?email=${this.email}`, {
-    //   method: "GET",
-    // }).then(res => res.json())
-    // .then(data =>this.massages=data);
+    this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+    this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+    console.warn(this.email)
+    this.massage.sender = this.email
+    fetch(`http://localhost:8080/mail/inbox?id=${this.email}`, {
+      method: "GET",
+    }).then(res => res.json())
+    .then(data =>this.emails=data);
   },
   methods: {
     dia(){
@@ -323,21 +315,29 @@ export default {
     },
    async draft(){
         this.dialog=false
-        await fetch("http://localhost:8080/draft",{
+        await fetch("http://localhost:8080/mail/draft/create",{
           method:"POST",
+          headers: {
+          Accept : "application/json",
+          "content-type" : "application/json"
+        },
           body:JSON.stringify(this.massage)
         }).catch((error)=>{
           console.log("Error",error)
         });
     },
    async send(){
+    await fetch("http://localhost:8080/mail/sent/create",{
+        method:"POST",
+        headers: {
+          Accept : "application/json",
+          "content-type" : "application/json"
+        },
+        body:JSON.stringify(this.massage)
+      })
       localStorage.setItem("massage",JSON.stringify(this.massage))
       this.clear()
       this.dialog=false
-      await fetch("http://localhost:8080/send",{
-        method:"POST",
-        body:JSON.stringify(this.massage)
-      })
     },
     handleFileChange(event) {
       console.log(event.target.files)

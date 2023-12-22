@@ -76,6 +76,13 @@ export default {
       },
     };
   },
+  async mounted(){
+    await fetch(`http://localhost:8080/users`,{
+      method: "GET"
+    }).catch((error) => {
+        console.error("Fetch error:", error);
+    });
+  },
   methods: {
     validate() {
       var mail = document.getElementById("typeEmailX").value;
@@ -95,13 +102,14 @@ export default {
       this.person.email = this.email1;
       this.person.password = this.password1;
       localStorage.setItem("person-inf", JSON.stringify(this.person));
-      localStorage.setItem( JSON.stringify(this.person));
-      let res = await fetch(`http://localhost8080?email=${this.person.email}&password=${this.person.password}`, {
+    //  localStorage.setItem( JSON.stringify(this.person));
+      let res = await fetch(`http://localhost:8080/logIn?email=${this.person.email}&password=${this.person.password}`, {
         method: "GET",
       }).catch((error) => {
         console.error("Fetch error:", error);
       });
       if (res.ok) {
+        // alert(res.ok)
         this.$router.push("/Home");
       } else {
         alert("please check email and password again");

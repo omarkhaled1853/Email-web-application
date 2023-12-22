@@ -145,7 +145,7 @@
                 <tr v-for="item in emails" :key="item.email">
                   <td>{{item.priority}}</td>
                   <td>{{item.sender}}</td>
-                  <td>{{item.Date}}</td>
+                  <td>{{item.date}}</td>
                   <td> {{item.subject}}</td>
                   <td>{{item.Content}}</td>
                   <td><a :href="item.attachments">{{ item.attachments }}</a></td>

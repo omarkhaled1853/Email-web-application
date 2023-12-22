@@ -201,6 +201,7 @@
               <td> <input v-model="choosen" :value="item.index" type="checkbox"></td>
               <td>{{item.receiver}}</td>
               <td>{{item.subject}}</td>
+              <td>{{item.date}}</td>
               <td>{{item.content}}</td>
               <td>{{item.priority}}</td>
               <td>
