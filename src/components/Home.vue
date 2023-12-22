@@ -24,8 +24,9 @@
   <div class="content">
     <div class="header">
       <h1 style="color: aliceblue; padding-top: 10px">O3M-Mail</h1>
-      <button style="width:auto; font-size:large;  background-color:darkgrey;  height:40px;margin:auto; margin-left:30px ;" @click="reload()">reload</button>
-      <button style="width:auto; background-color:darkgrey; border-radius: 10px; font-size:large; height:50px;margin:auto;margin-left:800px ;" @click="setting()">Setting <i  style="font-size:40px" class="fa-solid fa-gear"></i></button>
+      <button style="width:auto; font-size:large;  background-color:darkgrey;  height:40px;margin:auto; margin-left:2% ;" @click="reload()">reload</button>
+      <h1 class="box-title">INBOX</h1>
+      <button style="width:auto; background-color:darkgrey; border-radius: 10px; font-size:large; height:50px;margin:auto;margin-left:30% ;" @click="setting()">Setting <i  style="font-size:40px" class="fa-solid fa-gear"></i></button>
     </div>
     <div class="b2">
       <div class="container">
@@ -427,11 +428,24 @@ input[type="file"] {
   padding: 10px; 
   
 }
+.box-title {
+  color: aliceblue;
+  margin-left:8%;
+  text-align: center;
+  padding-top: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: 36px; /* You can adjust the font size as needed */
+  transition: color 0.3s ease; /* Smooth transition for color change */
+}
+.box-title:hover {
+  color:  #3498db; /* Change the color on hover */
+}
 .new {
   width:auto;
   height: 60px;
   margin-top: 15px;
-  margin-left: 100px;
+  right: 0;
+  margin-left: 5%;
   background-color:#3498db; /* Green background color */
   color: white; /* White text color */
   text-align: center; /* Center text */

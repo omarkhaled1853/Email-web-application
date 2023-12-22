@@ -24,8 +24,9 @@
     <div class="content">
       <div class="header">
         <h1 style="color: aliceblue; padding-top: 10px">O3M-Mail</h1>
-        <button style="width:auto; font-size:large;  background-color:darkgrey;  height:40px;margin:auto; margin-left:30px ;" @click="reload()">reload</button>
-        <button style="width:auto; background-color:darkgrey; border-radius: 10px; font-size:large; height:50px;margin:auto;margin-left:800px ;" @click="setting()">Setting <i  style="font-size:40px" class="fa-solid fa-gear"></i></button>
+        <button style="width:auto; font-size:large;  background-color:darkgrey;  height:40px;margin:auto; margin-left:2% ;" @click="reload()">reload</button>
+        <h1 class="box-title">Folders</h1>
+        <button style="width:auto; background-color:darkgrey; border-radius: 10px; font-size:large; height:50px;margin:auto;margin-left:30% ;" @click="setting()">Setting <i  style="font-size:40px" class="fa-solid fa-gear"></i></button>
       </div>
       <div class="b2">
         <div class="container">
@@ -40,7 +41,7 @@
               </div>
             </div>
            
-
+            <button class="new" @click="dia()">new massage</button>
           </div>
           <v-dialog v-model="dialog" width="800" heigth="850"  dark hide-overlay persistent>
             <v-card>
@@ -170,8 +171,8 @@
     name: "FolDers",
     data() {
       return {
-        user_name: "mohamed hassan",
-        email: "mohamed@gmail.com",
+        user_name: "",
+        email: "",
         dialog:false,
         selector:'',
         newname:'',        
@@ -268,17 +269,30 @@
     padding: 10px; 
     
   }
+  .box-title {
+    color: aliceblue;
+    margin-left:8%;
+    text-align: center;
+    padding-top: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-size: 36px; /* You can adjust the font size as needed */
+    transition: color 0.3s ease; /* Smooth transition for color change */
+  }
+  .box-title:hover {
+    color:  #3498db; /* Change the color on hover */
+  }
   .new {
     width:auto;
-    height: 25px;
-    margin-top: 5px;
-    margin-left: 15px;
-    background-color:#3498db; 
-    color: white; 
-    text-align: center; 
-    font-size: 15px; 
-    cursor: pointer; 
-    transition: transform 0.3s ease-in-out; 
+    height: 60px;
+    margin-top: 15px;
+    right: 0;
+    margin-left: 5%;
+    background-color:#3498db; /* Green background color */
+    color: white; /* White text color */
+    text-align: center; /* Center text */
+    font-size: 16px; /* Set font size */
+    cursor: pointer; /* Add a pointer cursor on hover */
+    transition: transform 0.3s ease-in-out; /* Add transition for scaling effect */
   }
   
   .new:hover {
