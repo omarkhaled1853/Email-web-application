@@ -124,10 +124,8 @@
             <v-card-text style="background-color:black">
               <v-form>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">select sender folders:</label>
-                <select id="menu" name="menu" v-model="foldername">
-                  <option value="Social">Social</option>
-                  <option value="Work">Work</option>
-                  <option value="Family">Family</option>
+                <select v-model="foldername"  id="searchtypeid" name="searchtype">
+                  <option v-for="folder in folders_name" :key="folder.name" :option=folder_name >{{ folder.name }}</option>
                 </select>
                 <v-btn style="width:auto; margin-left:20px" @click="addtofolder()">Add To Folder</v-btn>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">creat new:</label>
@@ -153,7 +151,7 @@
                 <input v-model="newname" type="text">
                 <br>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">email:</label>
-                <input :value="this.emails[this.itemid].sender" style="width:400px" type="text"   disabled>
+                <input :value="this.itemsender" style="width:400px" type="text"   disabled>
                 <v-btn style="width:auto;margin-top:15px; margin-left:10px" @click="addtocontacte()">add to contacts</v-btn>
                 </v-form>
             </v-card-text>
@@ -199,7 +197,7 @@
            
           </tr>
           <tr v-for="item in emails" :key="item.email">
-            <td> <input v-model="choosen" :value="item.index" type="checkbox">   <i @click="folddialog(item.id)" class="fa-solid fa-folder-plus"> </i> <i @click="contactdialog(item.id)" class="fa-solid fa-user-plus"></i>   </td>
+            <td> <input v-model="choosen" :value="item.id" type="checkbox">   <i @click="folddialog(item.idr)" class="fa-solid fa-folder-plus"> </i> <i @click="contactdialog(item.id,item.sender)" class="fa-solid fa-user-plus"></i>   </td>
             <td>{{item.priority}}</td>
             <td>{{item.sender}}</td>
             <td>{{item.date}}</td>
@@ -242,6 +240,8 @@ export default {
       contacts:false,
       newname:'',
       sittingdialog:false,
+      itemsender:'',
+      nameuse:'',
       massage:{
         sender: '',
         receiver:'',
@@ -250,12 +250,25 @@ export default {
         priority:'',
         attachments:[],
       },
+      folders_name:[
+            {
+                name:'work',
+            },
+            {
+                name:'social'
+            },
+            {
+                name:'family'
+            },
+            {
+                name:'frinds'
+            },
+            ],
       emails: [],
+      ids: []
     };
   },
   mounted() {
-    // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
-    //     this.$router.push('/');
     this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
     this.email = JSON.parse(localStorage.getItem("person-inf")).email;
     console.warn(this.email)
@@ -269,16 +282,23 @@ export default {
     dia(){
       this.dialog=!this.dialog
     },
-    folddialog(ind){
+     async folddialog(ind){
       this.folder=true
       this.itemid=ind
+     
+      //name of folders
+     // await fetch('http://localhost:8080/',{
+    //       method:"GET"
+    //  }).then(res=>res.json())
+    //  .then(data=>this.folders_name=data);
     },
     closefolder(){
       this.folder=false
     },
-    contactdialog(ind){
+    contactdialog(ind,its){
       this.contacts=true
       this.itemid=ind
+      this.itemsender=its
     },
     closecontact(){
       this.contacts=false
@@ -339,6 +359,7 @@ export default {
       localStorage.setItem("massage",JSON.stringify(this.massage))
       this.clear()
       this.dialog=false
+      location.reload()
     },
     handleFileChange(event) {
       console.log(event.target.files)
@@ -363,19 +384,14 @@ export default {
       this.emails=res.data
     },
    async trash(ind){
+    this.ids[0] = ind
       console.log("size "+this.choosen.length)
       console.log(this.choosen[2])
       console.warn(JSON.stringify(this.emails[ind]));
-      fetch("http://localhost:8080/trash",{
-        method:"POST",
-        body:JSON.stringify(this.emails[ind])
-      });
-      let res= await fetch(`http://localhost:8080/ ?id=${ind}`,{
+      await fetch(`http://localhost:8080/mail/inbox/trash?id=${this.email}&ids=${this.ids}`,{
         method:"DELETE"
      })
-      this.emails=res.data
-
-
+     location.reload();
     },
     async delet() {
       if(this.choosen.length===0)
@@ -383,38 +399,41 @@ export default {
         alert("please select email ")
       }
       else{
-      await fetch("http://localhost:8080/trash",{
-        method:"POST",
-        body:this.choosen
-      })
-      let res= await fetch(`http://localhost:8080/ ?indcies=${this.choosen}`,{
+      await fetch(`http://localhost:8080/mail/inbox/trash?id=${this.email}&ids=${this.choosen}`,{
         method:"DELETE",
      })
-      this.emails=res.data
-
+      location.reload();
     }
     },
     async addtofolder(){
+      console.warn(this.itemid,this.foldername)
       await fetch("http://localhost:8080/  ",
       {
         method:"POST",
-        body:(this.emails[this.itemid],this.foldername)
+        body:(this.itemid,this.foldername)
       })
+      this.folder=false
+      this.foldername=''
     },
    async createnew(){
+    console.warn(this.itemid,this.newfoldername)
       await fetch("http://localhost:8080/  ",
       {
         method:"POST",
-        body:(this.emails[this.itemid],this.newfoldername)
+        body:(this.itemid,this.newfoldername)
       })
-
+      this.folder=false
+      this.newfoldername=''
     },
    async addtocontacte(){
-      await fetch("http://localhost:8080/  ",
+   
+    console.warn(this.newname,this.itemsender)
+      await fetch(`http://localhost:8080/contact/create?id=${this.email}&name=${this.newname}&email=${this.itemsender}`,
       {
         method:"POST",
-        body:(this.emails[this.itemid],this.newname)
       })
+      this.contacts=false
+      this.newname=''
     }
    }
 };

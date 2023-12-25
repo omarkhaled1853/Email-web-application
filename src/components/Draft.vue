@@ -130,6 +130,7 @@
           <div class="info">
            <table border="2px">
             <tr>
+              <td></td>
               <td>to</td>
               <td>subject</td>
               <td>content</td>
@@ -139,6 +140,7 @@
              
             </tr>
             <tr v-for="item in emails" :key="item.id">
+              <td><input v-model="choosen" :value="item.id" type="checkbox"></td>
               <td>{{item.sender}}</td>
               <td>{{item.subject}}</td>
               <td>{{item.content}}</td>
@@ -146,7 +148,7 @@
               <td>
                 <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
               </td>
-              <td><i @click="trash(item.email)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
+              <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
             </tr>
            </table>
           </div>
@@ -187,19 +189,23 @@
         attachments:[],
       },
         emails: [],
+        ids: [],
+        choosen:[],
       };
     },
     mounted() {
-      // // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
-      // //   this.$router.push('/');
-    //   this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
-    // this.email = JSON.parse(localStorage.getItem("person-inf")).email;
-    // console.warn(this.email)
-    // this.massage.sender = this.email
-      // fetch("http://localhost:8080/GetDrafts", {
-      //   method: "GET",
-      // }).then(res=>res.json())
-      // .then(data=>this.emails=data);
+      // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
+      //   this.$router.push('/');
+      this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+      this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+      console.warn(this.email)
+      this.massage.sender = this.email
+      fetch(`http://localhost:8080/mails/draft?id=${this.email}`, {
+        method: "GET",
+      })
+      .then(res => res.json())
+      .then(data =>this.emails=data);
+      console.warn(this.emails)
       
     },
     methods: {
@@ -233,13 +239,32 @@
         this.itemmail=it;
       },
      async send(){
-        localStorage.setItem("massage",JSON.stringify(this.massage))
-        this.dialog=false
-        await fetch("http://localhost:8080/send",{
-          method:"POST",
-          body:JSON.stringify(this.massage)
-        })
-  
+      await fetch("http://localhost:8080/mail/sent/create",{
+        method:"POST",
+        headers: {
+          Accept : "application/json",
+          "content-type" : "application/json"
+        },
+        body:JSON.stringify(this.massage)
+      })
+      localStorage.setItem("massage",JSON.stringify(this.massage))
+      this.clear()
+      this.dialog=false
+      location.reload()
+      },
+      async draft(){
+      await fetch("http://localhost:8080/mail/draft/create",{
+        method:"POST",
+        headers: {
+          Accept : "application/json",
+          "content-type" : "application/json"
+        },
+        body:JSON.stringify(this.massage)
+      })
+      localStorage.setItem("massage",JSON.stringify(this.massage))
+      this.clear()
+      this.dialog=false
+      location.reload()
       },
       ///search
      async srch(){
@@ -254,20 +279,30 @@
        }).then(res=>res.json())
       .then(data=>this.emails=data);
       },
-      //remove this contact 
-     async trash(ind){
-        console.warn(JSON.stringify("delete "+ind));
-        fetch("http://localhost:8080/trash",{
-          method:"POST",
-          body:JSON.stringify(ind)
-        });
-        await fetch(`http://localhost:8080/ ?index=${ind}`,{
-          method:"DELETE"
-       }).then(res=>res.json())
-      .then(data=>this.emails=data);
       
-  
-      },
+      async trash(ind){
+      this.ids[0] = ind
+      console.log(ind)
+      console.log("size "+this.choosen.length)
+      console.log(this.choosen[2])
+      console.warn(JSON.stringify(this.emails[ind]));
+      await fetch(`http://localhost:8080/mail/draft/trash?id=${this.email}&ids=${this.ids}`,{
+        method:"DELETE"
+     })
+     location.reload();
+    },
+    async delet() {
+      if(this.choosen.length===0)
+      {
+        alert("please select email ")
+      }
+      else{
+      await fetch(`http://localhost:8080/mail/draft/trash?id=${this.email}&ids=${this.choosen}`,{
+        method:"DELETE",
+     })
+      location.reload();
+    }
+    },
       ///change name (edit)
      async save(itm){
         console.warn("edit-mail"+JSON.stringify(itm))

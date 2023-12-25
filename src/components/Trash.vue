@@ -199,7 +199,7 @@
              
             </tr>
             <tr v-for="item in emails" :key="item.email">
-              <td> <input v-model="choosen" :value="item.index" type="checkbox"></td>
+              <td> <input v-model="choosen" :value="item.id" type="checkbox"></td>
               <td>{{item.receiver}}</td>
               <td>{{item.subject}}</td>
               <td>{{item.date}}</td>
@@ -208,7 +208,7 @@
               <td>
                 <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
               </td>
-              <td><i @click="trash(item.index)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
+              <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
             </tr>
            </table>
           </div>
@@ -252,19 +252,22 @@
         attachments:[],
       },
         emails: [],
+        ids: []
       };
     },
     mounted() {
       // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
       //   this.$router.push('/');
-      // this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
-      // this.email = JSON.parse(localStorage.getItem("person-inf")).email;
-      // console.warn(this.email)
-      // this.massage.sender = this.email
-    //   let res = fetch("http://localhost:8080/GetMails", {
-    //     method: "GET",
-    //   });
-    //   this.emails = res.data;
+      this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+      this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+      console.warn(this.email)
+      this.massage.sender = this.email
+      fetch(`http://localhost:8080/mails/trash?id=${this.email}`, {
+        method: "GET",
+      })
+      .then(res => res.json())
+      .then(data =>this.emails=data);
+      console.warn(this.emails)
     },
     methods: {
       dia(){
@@ -301,14 +304,18 @@
         this.isToInvalid = !this.massage.to.match(emailPattern);
       },
      async send(){
-        localStorage.setItem("massage",JSON.stringify(this.massage))
-        this.clear()
-        this.dialog=false
-        await fetch("http://localhost:8080:send",{
-          method:"POST",
-          body:JSON.stringify(this.massage)
-        })
-  
+      await fetch("http://localhost:8080/mail/sent/create",{
+        method:"POST",
+        headers: {
+          Accept : "application/json",
+          "content-type" : "application/json"
+        },
+        body:JSON.stringify(this.massage)
+      })
+      localStorage.setItem("massage",JSON.stringify(this.massage))
+      this.clear()
+      this.dialog=false
+      location.reload()
       },
       handleFileChange(event) {
         console.log(event.target.files)
@@ -333,17 +340,17 @@
         this.emails=res.data
       },
      async trash(ind){
-        let res= await fetch(`http://localhost:8080/ ?index=${ind}`,{
+        this.ids[0] = ind
+        await fetch(`http://localhost:8080/mail/delete?id=${this.email}&ids=${this.ids}`,{
           method:"DELETE"
        })
-        this.emails=res.data
+        location.reload();
       },
       async delet() {
-        let res= await fetch(`http://localhost:8080/ ?indcies=${this.choosen}`,{
+        await fetch(`http://localhost:8080/mail/delete?id=${this.email}&ids=${this.choosen}`,{
           method:"DELETE"
        })
-        this.emails=res.data
-  
+        location.reload();
       }
       },
       

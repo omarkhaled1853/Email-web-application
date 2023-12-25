@@ -65,6 +65,24 @@
             </div>
             <button class="new" @click="dia()">new massage</button>
           </div>
+          <v-dialog v-model="addmaildialog" width="400" heigth="850"  dark hide-overlay persistent>
+            <v-card>
+              <v-card-title style="color:white; background-color:#3498db; padding:auto; text-align:center; font-size:35px">add email</v-card-title>
+              <v-card-text style="background-color:black">
+                <v-form>
+                  <label style="font-size:20px; font:bold; color:#3498db;background-color:black">new email:</label>
+                  <br>
+                  <input v-model="additionmail" style="width:300px" type="text" placeholder=" newmail@CSED.com" >
+                 </v-form>
+              </v-card-text>
+             
+              <v-card-actions style="background-color:black">
+                <v-btn style="width:auto; margin-left:200px" @click="admail()">add</v-btn>
+                <v-btn style="width:auto; margin-left:60px" @click="diaadd()">close</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <!-- /////////////////////////////////////////////////////////////////////////////////////// -->
           <v-dialog v-model="dialog" width="800" heigth="850"  dark hide-overlay persistent>
             <v-card>
               <v-card-title style="color:white; background-color:#3498db; padding:auto; text-align:center; font-size:35px">new massage</v-card-title>
@@ -161,7 +179,7 @@
              
             </tr>
             <tr v-for="item in contacts" :key="item.email">
-              <td> <i @click="editf(item.email)" style="font-size:25px; color:#3498db;" class="fa-solid fa-pen-to-square"></i> <button class="new" @click="dia(item.email)">massage</button>    </td>
+              <td> <i @click="editf(item.email)" style="font-size:25px; color:#3498db;" class="fa-solid fa-pen-to-square"></i> <button class="new" @click="addmail(item.email,item.Name)">add email</button>    </td>
               <td>{{item.Name}}</td>
               <td>{{item.email}}</td>
               <td><i @click="trash(item.email)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
@@ -195,7 +213,10 @@
         itemindex:'',
         newfoldername:'',
         newname:'',
+        additionmail:'',
         sittingdialog:false,
+        addmaildialog:false,
+        nameedidt:'',
         massage:{
         sender:'',
         receiver:'',
@@ -204,45 +225,34 @@
         priority:'',
         attachments:[],
         },
-        contacts: [
-          {
-            
-            Name:'mohamed hassan',
-            email:'mohamed@test.com',
-            
-            
-          },
-          {
-            Name:'medoo',
-            email:'medo@test.com',
-          },
-          {
-            Name:'omar',
-            email:'omar@test.com',
-          },
-          {
-            Name:'mahmoud',
-            email:'hoda@test.com',
-          }
-        ],
+        contacts: [],
       };
     },
-    mounted() {
-      // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
-      //   this.$router.push('/');
-    //   this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
-    // this.email = JSON.parse(localStorage.getItem("person-inf")).email;
-    // console.warn(this.email)
-    // this.massage.sender = this.email
-    // fetch("http://localhost:8080/GetMails", {
-    //     method: "GET",
-      // }).then(res=>res.json())
-      //     .then(data=>this.contacts=data);
+    async mounted() {
+      this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+      this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+      console.warn(this.email)
+      this.massage.sender = this.email
+      fetch(`http://localhost:8080/contacts?id=${this.email}`, {
+          method: "GET",
+      }).then(res=>res.json())
+      .then(data=>this.contacts=data);
     },
+    
     methods: {
+      addmail(ind,nms){
+        this.addmaildialog=true
+        this.itemmail=ind
+        this.nameedidt=nms
+
+      },
+      diaadd(){
+        this.addmaildialog=false
+      },
       dia(itemmail){
         this.dialog=!this.dialog
         this.itemmail=itemmail
+       
       },
       setting(){
         this.sittingdialog=true
@@ -291,18 +301,18 @@
        }).then(res=>res.json())
           .then(data=>this.contacts=data);
       },
-      //remove this contact 
-     async trash(ind){
-        console.warn(JSON.stringify("delete "+ind));
-        fetch("http://localhost:8080/trash",{
-          method:"POST",
-          body:JSON.stringify(ind)
-        });
-         await fetch(`http://localhost:8080/ ?index=${ind}`,{
+      async trash(ind){
+        this.ids[0] = ind
+        await fetch(`http://localhost:8080/contact/delete?id=${this.email}&ids=${this.ids}`,{
           method:"DELETE"
-       }).then(res=>res.json())
-        .then(data=>this.contacts=data);
-  
+       })
+        location.reload();
+      },
+      async delet() {
+        await fetch(`http://localhost:8080/contact/delete?id=${this.email}&ids=${this.choosen}`,{
+          method:"DELETE"
+       })
+        location.reload();
       },
       ///change name (edit)
      async save(itm){
@@ -315,6 +325,14 @@
           body:(this.newname,itm)
         })
   
+      },
+      async admail(){
+        console.warn(this.additionmail,this.itemmail,this.nameedidt)
+    await fetch(`http://localhost:8080/ ?addemail=${this.additionmail}&email=${this.itemmail}&name=${this.nameedidt}`,{
+          method:"POST",
+          })
+          this.addmaildialog=false
+
       }
      }
   };

@@ -199,13 +199,18 @@
                 name:'frinds'
             },
             ],
-        emails:[],
+        emails:[
+
+        ],
+        ids: []
       };
     },
-    // mounted(){
-    //   if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
-    //     this.$router.push('/');
-    // },
+    async mounted(){
+      await fetch(`http://localhost:8080/folders?id=${this.email}`,{
+          method:"GET"
+      }).then(res=>res.json())
+      .then(data=>this.folders_name=data);
+    },
     methods: {
       dia(itemmail){
         this.dialog=!this.dialog
@@ -238,25 +243,25 @@
   
       },
      async select(){
-     await fetch(`http://localhost:8080/    ?file_selected=${this.selector}`,{
+     await fetch(`http://localhost:8080/mails/folders?id=${this.email}&folderName=${this.selector}`,{
           method:"GET"
      }).then(res=>res.json())
      .then(data=>this.emails=data);
       
       },
-      //remove this contact 
-     async trash(ind){
-        console.warn(JSON.stringify("delete "+ind));
-        fetch("http://localhost:8080/ ",{
-          method:"POST",
-          body:JSON.stringify(ind)
-        });
-         await fetch(`http://localhost:8080/  ?index=${ind}`,{
+    async trash(ind){
+        this.ids[0] = ind
+        await fetch(`http://localhost:8080/folders/mail/delete?id=${this.email}&folderName=${this.selector}&ids=${this.ids}`,{
           method:"DELETE"
-       }).then(res=>res.json())
-     .then(data=>this.emails=data);
-     },
-    
+       })
+        location.reload();
+      },
+      async delet() {
+        await fetch(`http://localhost:8080/mail/delete?id=${this.email}&folderName=${this.selector}&ids=${this.choosen}`,{
+          method:"DELETE"
+       })
+        location.reload();
+      }
      }
   };
   </script>
