@@ -123,22 +123,26 @@
             <v-card-title style="color:white; background-color:#3498db; padding:auto; text-align:center; font-size:35px">Folders<i style="font-size:50px; margin-left:5px;" class="fa-solid fa-folder-plus"> </i></v-card-title>
             <v-card-text style="background-color:black">
               <v-form>
-                <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">select sender folders:</label>
-                <select v-model="foldername"  id="searchtypeid" name="searchtype">
+                <label v-if="!createNewVisible" style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">select sender folders:</label>
+                <select v-if="!createNewVisible" v-model="foldername"  id="searchtypeid" name="searchtype">
                   <option v-for="folder in folders_name" :key="folder.name" :option=folder_name >{{ folder.name }}</option>
                 </select>
-                <v-btn style="width:auto; margin-left:20px" @click="addtofolder()">Add To Folder</v-btn>
-                <label style="font-size:20px; font:bold; color:#3498db;background-color:black">creat new:</label>
-                <br>
-                <input v-model="newfoldername" style="width:400px" type="text"  placeholder="new folder name">
-                <v-btn style="width:auto;margin-top:15px; margin-left:10px" @click="createnew()">create and add to folder</v-btn>
+                <v-btn v-if="!createNewVisible" style="width:auto; margin-left:20px" @click="addtofolder()">Add To Folder</v-btn>
+
+                <label v-if="createNewVisible" style="font-size:20px; font:bold; color:#3498db;background-color:black">creat new:</label>
+                <br v-if="createNewVisible">
+                <input v-if="createNewVisible" v-model="newfoldername" style="width:400px" type="text"  placeholder="new folder name">
+                <v-btn v-if="createNewVisible" style="width:auto;margin-top:15px; margin-left:10px" @click="createnew()">create and add to folder</v-btn>
                 </v-form>
             </v-card-text>
-
+            
             <v-card-actions style="background-color:black">
-             
+              
               <v-btn style="width:auto; margin-left:500px" @click="closefolder()">close</v-btn>
             </v-card-actions>
+            <v-card-actions style="background-color:black">
+              
+              <v-btn style="width:90%; margin:auto; " @click="showCreateNew()">Create other folder</v-btn></v-card-actions>
           </v-card>
         </v-dialog>
         <!-- // ///////////////////////////////////////////////////////-->
@@ -239,6 +243,7 @@ export default {
       newfoldername:'',
       contacts:false,
       newname:'',
+      createNewVisible: false,
       sittingdialog:false,
       itemsender:'',
       nameuse:'',
@@ -264,7 +269,13 @@ export default {
                 name:'frinds'
             },
             ],
-      emails: [],
+      emails: [
+        {
+          id:50,
+          sender:"Ali",
+          content:'test'
+        }
+      ],
       ids: []
     };
   },
@@ -294,6 +305,7 @@ export default {
     },
     closefolder(){
       this.folder=false
+      this.createNewVisible=false
     },
     contactdialog(ind,its){
       this.contacts=true
@@ -305,6 +317,9 @@ export default {
     },
     setting(){
       this.sittingdialog=true
+    },
+    showCreateNew(){
+      this. createNewVisible=!this.createNewVisible
     },
     clear(){
       this.massage.receiver=''

@@ -133,7 +133,7 @@
                     <br>
                     <input v-model="this.newname" style="width:600px" type="text" placeholder=" new name"   id="toid" >
                     <br>
-                    <label style="font-size:20px; font:bold; color:#3498db;background-color:black">email:</label>
+                    <label style="font-size:20px; font:bold; color:#3498db;background-color:black">old name:</label>
                     <br>
                     <input style="width:600px" type="text" :value="this.itemmail"  disabled>
                    
@@ -178,12 +178,21 @@
               <td>remove<i class="fa-solid fa-trash" style="font-size:15px; color:red"></i></td>
              
             </tr>
-            <tr v-for="item in contacts" :key="item.email">
-              <td> <i @click="editf(item.email)" style="font-size:25px; color:#3498db;" class="fa-solid fa-pen-to-square"></i> <button class="new" @click="addmail(item.email,item.Name)">add email</button>    </td>
-              <td>{{item.Name}}</td>
-              <td>{{item.email}}</td>
-              <td><i @click="trash(item.email)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
-            </tr>
+            <tr v-for="(emails, name) in contacts" :key="name">
+              <td>
+                  <i @click="editf(name)" style="font-size:25px; color:#3498db;" class="fa-solid fa-pen-to-square"></i>
+                  <button class="new" @click="addmail(name)">add email</button>
+              </td>
+              <td>{{ name }}</td>
+              <td>
+                <ul style="list-style-type: none; padding: 0;">
+                      <li v-for="email in emails" :key="email">{{ email }}</li>
+                  </ul>
+              </td>
+              <td>
+                  <i @click="trash(name)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i>
+              </td>
+          </tr>
            </table>
           </div>
           <div class="usersinformation">
@@ -225,7 +234,10 @@
         priority:'',
         attachments:[],
         },
-        contacts: [],
+        contacts: {
+                'moahemd hassan': ['mohamed@example.com', 'hassan@gmail.com'],
+                'omar khaled': ['omar@example.com', 'khaled@yahoo.com']
+            },
       };
     },
     async mounted() {
@@ -240,9 +252,8 @@
     },
     
     methods: {
-      addmail(ind,nms){
+      addmail(nms){
         this.addmaildialog=true
-        this.itemmail=ind
         this.nameedidt=nms
 
       },
