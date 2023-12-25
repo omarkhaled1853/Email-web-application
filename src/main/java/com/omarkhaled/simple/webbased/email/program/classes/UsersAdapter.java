@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class UsersAdapter implements Adapter<Map<String, User>> {
     private final ObjectMapper mapper = new ObjectMapper();
-    private String path = "D:\\Mail Server\\";
+    private String path = "./Mail Server\\";
     @Override
     public void save(Map<String, User> users, String file) throws IOException {
         path = path.concat(file);

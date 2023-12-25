@@ -52,43 +52,4 @@ public class UsersService {
         return usersDB.get(id);
     }
 
-    //add in inbox
-    public void addToInbox(String id, Mail mail){
-        User user = usersDB.get(id);
-        user.getInbox().put(mail.getId(), mail);
-        usersDB.put(user.getEmail(), user);
-    }
-
-    //update draft
-    public void updateDraft(String id, Map<String, Mail> updatedDraft){
-        User user = usersDB.get(id);
-        user.getDraft().clear();
-        user.getDraft().putAll(updatedDraft);
-        usersDB.put(user.getEmail(), user);
-    }
-
-    //update sent
-    public void updateSent(String id, Map<String, Mail> updatedSent){
-        User user = usersDB.get(id);
-        user.getSent().clear();
-        user.getSent().putAll(updatedSent);
-        usersDB.remove(id);
-        usersDB.put(user.getEmail(), user);
-    }
-
-    //update inbox
-    public void updateInbox(String id, Map<String, Mail> updatedInbox){
-        User user = usersDB.get(id);
-        user.getInbox().clear();
-        user.getInbox().putAll(updatedInbox);
-        usersDB.put(user.getEmail(), user);
-    }
-
-    //update trash
-    public void updateTrash(String id, Map<String, Mail> updatedTrash){
-        User user = usersDB.get(id);
-        user.getTrash().clear();
-        user.getTrash().putAll(updatedTrash);
-        usersDB.put(user.getEmail(), user);
-    }
 }

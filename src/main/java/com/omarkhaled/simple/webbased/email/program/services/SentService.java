@@ -1,6 +1,7 @@
 package com.omarkhaled.simple.webbased.email.program.services;
 
 import com.omarkhaled.simple.webbased.email.program.classes.Mail;
+import com.omarkhaled.simple.webbased.email.program.classes.User;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -9,16 +10,6 @@ import java.util.*;
 
 @Service
 public class SentService {
-    Map<String, Mail> sentDB = new HashMap<>();
-
-    public Map<String, Mail> getSentDB() {
-        return sentDB;
-    }
-
-    public void setSentDB(Map<String, Mail> sentDB) {
-        this.sentDB = sentDB;
-    }
-
     //build mail
     public Mail buildMail(Mail mail){
         return new Mail
@@ -35,20 +26,20 @@ public class SentService {
     }
 
     //get mails
-    public Collection<Mail> getMails(){
-        return sentDB.values();
+    public Collection<Mail> getMails(String id, Map<String, User> usersDB){
+        return usersDB.get(id).getSent().values();
     }
 
     //add mail
-    public void addMail(Mail mail){
-        sentDB.put(mail.getId(), mail);
+    public void addMail(Mail mail, Map<String, User> usersDB){
+        usersDB.get(mail.getSender()).getSent().put(mail.getId(), mail);
     }
 
     //delete mails
-    public List<Mail> deleteMails(List<String> ids){
+    public List<Mail> deleteMails(String id, List<String> ids, Map<String, User> usersDB){
         List<Mail> mails = new ArrayList<>();
-        for (String id : ids){
-            mails.add(sentDB.remove(id));
+        for (String maiId : ids){
+            mails.add(usersDB.get(id).getSent().remove(maiId));
         }
         return mails;
     }

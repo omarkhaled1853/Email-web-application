@@ -1,8 +1,8 @@
 package com.omarkhaled.simple.webbased.email.program.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.omarkhaled.simple.webbased.email.program.classes.Mail;
 import com.omarkhaled.simple.webbased.email.program.classes.User;
+import com.omarkhaled.simple.webbased.email.program.services.InboxService;
 import com.omarkhaled.simple.webbased.email.program.services.SentService;
 import com.omarkhaled.simple.webbased.email.program.services.TrashService;
 import com.omarkhaled.simple.webbased.email.program.services.UsersService;
@@ -21,12 +21,15 @@ import java.util.List;
 public class SentController {
     private final UsersService usersService;
     private final SentService sentService;
+
+    private final InboxService inboxService;
     private final TrashService trashService;
 
     @Autowired
-    public SentController(UsersService usersService, SentService sentService, TrashService trashService) {
+    public SentController(UsersService usersService, SentService sentService, InboxService inboxService, TrashService trashService) {
         this.usersService = usersService;
         this.sentService = sentService;
+        this.inboxService = inboxService;
         this.trashService = trashService;
     }
 
@@ -34,61 +37,38 @@ public class SentController {
     @GetMapping ("/mails/sent")
     public Collection<Mail> getSent(@RequestParam String id){
 
-//        System.out.println(id);
-
         User user = usersService.getUser(id);
 
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        sentService.setSentDB(user.getSent());
-
-        System.out.println(sentService.getMails());
-
-        return sentService.getMails();
+        return sentService.getMails(id, usersService.getUsersDB());
     }
 
     //add mail
     @PostMapping ("/mail/sent/create")
     public ResponseEntity<Boolean> create(@RequestBody Mail mail){
 
-        System.out.println(mail);
-        System.out.println("=====================================================");
-
         User receiver = usersService.getUser(mail.getReceiver());
 
         if(receiver == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         Mail mail1 = sentService.buildMail(mail);
-//        sentService.addMail(mail1);
-
-        //update sent sender
-        usersService.getUsersDB().get(mail.getSender()).getSent().put(mail1.getSender(), mail1);
+        sentService.addMail(mail1, usersService.getUsersDB());
 
         //update inbox receiver
-
-        usersService.getUsersDB().get(receiver.getEmail()).getInbox().put(mail1.getId(), mail1);
-
-
-
-        System.out.println(usersService.getUsersDB().get(receiver.getEmail()).getInbox());
-        System.out.println("=====================================================");
+        inboxService.addMail(mail1, usersService.getUsersDB());
 
         return ResponseEntity.ok(true);
     }
 
     //trash mail
     @DeleteMapping ("/mail/sent/trash")
-    public void trash(@RequestParam List<String> ids) throws JsonProcessingException {
-//        ObjectMapper mapper = new ObjectMapper();
-//        List<String> ids = mapper.readValue(list, List.class);
-        List<Mail> mails = sentService.deleteMails(ids);
+    public void trash(@RequestParam String id, @RequestParam List<String> ids){
+        List<Mail> mails = sentService.deleteMails(id, ids, usersService.getUsersDB());
 
         for (Mail mail : mails)
             if(mail == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        //update
-        usersService.updateSent(mails.get(0).getSender(), sentService.getSentDB());
-
-        trashService.addMails(mails);
+        trashService.addMails(id, mails, usersService.getUsersDB());
     }
 }

@@ -1,10 +1,7 @@
 package com.omarkhaled.simple.webbased.email.program.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.omarkhaled.simple.webbased.email.program.classes.Mail;
 import com.omarkhaled.simple.webbased.email.program.classes.User;
-import com.omarkhaled.simple.webbased.email.program.services.SentService;
 import com.omarkhaled.simple.webbased.email.program.services.TrashService;
 import com.omarkhaled.simple.webbased.email.program.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,18 +33,13 @@ public class TrashController {
 
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        trashService.setTrashDB(user.getTrash());
-
-        return trashService.getMails();
+        return trashService.getMails(id, usersService.getUsersDB());
     }
 
     //delete trashed mail
     @DeleteMapping ("/mail/delete")
-    public void delete(@RequestParam List<String> ids) throws JsonProcessingException {
-//        ObjectMapper mapper = new ObjectMapper();
-//        List<String> ids = mapper.readValue(list, List.class);
-
-        List<Mail> mails = trashService.deleteMails(ids);
+    public void delete(@RequestParam String id, @RequestParam List<String> ids){
+        List<Mail> mails = trashService.deleteMails(id, ids, usersService.getUsersDB());
 
         for (Mail mail : mails)
             if(mail == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);

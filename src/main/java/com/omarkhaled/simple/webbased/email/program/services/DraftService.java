@@ -1,6 +1,7 @@
 package com.omarkhaled.simple.webbased.email.program.services;
 
 import com.omarkhaled.simple.webbased.email.program.classes.Mail;
+import com.omarkhaled.simple.webbased.email.program.classes.User;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -9,15 +10,6 @@ import java.util.*;
 
 @Service
 public class DraftService {
-    Map<String, Mail> draftDB = new HashMap<>();
-
-    public Map<String, Mail> getDraftDB() {
-        return draftDB;
-    }
-
-    public void setDraftDB(Map<String, Mail> draftDB) {
-        this.draftDB = draftDB;
-    }
     //build mail
     public Mail buildMail(Mail mail){
         return new Mail
@@ -34,21 +26,22 @@ public class DraftService {
     }
 
     //get mails
-    public Collection<Mail> getMails(){
-        return draftDB.values();
+    public Collection<Mail> getMails(String id, Map<String, User> usersDB){
+        return usersDB.get(id).getDraft().values();
     }
 
     //draft mail
-    public void draftMail(Mail mail){
-        draftDB.put(mail.getId(), mail);
+    public void draftMail(Mail mail, Map<String, User> usersDB){
+        usersDB.get(mail.getSender()).getDraft().put(mail.getId(), mail);
     }
 
     //delete mail
-    public List<Mail> deleteMails(List<String> ids){
+    public List<Mail> deleteMails(String id, List<String> ids, Map<String, User> usersDB){
         List<Mail> mails = new ArrayList<>();
-        for (String id : ids){
-            mails.add(draftDB.remove(id));
+        for (String maiId : ids){
+            mails.add(usersDB.get(id).getDraft().remove(maiId));
         }
         return mails;
     }
+
 }

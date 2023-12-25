@@ -1,7 +1,5 @@
 package com.omarkhaled.simple.webbased.email.program.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.omarkhaled.simple.webbased.email.program.classes.Mail;
 import com.omarkhaled.simple.webbased.email.program.classes.User;
 import com.omarkhaled.simple.webbased.email.program.services.DraftService;
@@ -37,33 +35,27 @@ public class DraftController {
 
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        draftService.setDraftDB(user.getDraft());
-
-        return draftService.getMails();
+        return draftService.getMails(id, usersService.getUsersDB());
     }
 
     //draft mail
     @PostMapping ("/mail/draft/create")
     public void create(@RequestBody Mail mail){
-        draftService.draftMail(mail);
-
-        //update
-        usersService.updateDraft(mail.getSender(), draftService.getDraftDB());
+        Mail mail1 = draftService.buildMail(mail);
+        draftService.draftMail(mail1, usersService.getUsersDB());
     }
 
     //trash mail
     @DeleteMapping ("/mail/draft/trash")
-    public void trash(@RequestParam List<String> ids) throws JsonProcessingException {
-//        ObjectMapper mapper = new ObjectMapper();
-//        List<String> ids = mapper.readValue(list, List.class);
-        List<Mail> mails = draftService.deleteMails(ids);
+    public void trash(@RequestParam String id, @RequestParam List<String> ids){
+        List<Mail> mails = draftService.deleteMails(id, ids, usersService.getUsersDB());
+
+        System.out.println(mails);
 
         for (Mail mail : mails)
             if(mail == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        //update
-        usersService.updateDraft(mails.get(0).getSender(), draftService.getDraftDB());
-
-        trashService.addMails(mails);
+        System.out.println(mails);
+        trashService.addMails(id, mails, usersService.getUsersDB());
     }
 }

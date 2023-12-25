@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -25,6 +26,16 @@ public class FoldersController {
         this.foldersServices = foldersServices;
     }
 
+    //get folders
+    @GetMapping ("/folders")
+    public Collection<String> getFolders(@RequestParam String id){
+        User user = usersService.getUser(id);
+
+        if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        return foldersServices.getFolders(id, usersService.getUsersDB());
+    }
+
     //get mails
     @GetMapping ("/mails/folders")
     public Collection<Mail> getFolder (@RequestParam String id, @RequestParam String folderName){
@@ -32,24 +43,38 @@ public class FoldersController {
 
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        foldersServices.setFoldersDB(user.getFolders());
+        if(usersService.getUser(id).getFolders().get(folderName) == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        return foldersServices.getMails(folderName);
+        return foldersServices.getMails(id, folderName, usersService.getUsersDB());
+    }
+
+    //add mail to folder
+    @PostMapping ("/folders/create")
+    public void add (@RequestParam String id, @RequestParam String folderName, @RequestBody List<String> ids){
+        User user = usersService.getUser(id);
+
+        if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        if(!usersService.getUser(id).getFolders().containsKey(folderName))
+            foldersServices.createFolder(id, folderName, usersService.getUsersDB());
+
+        foldersServices.addMails(id, folderName, ids, usersService.getUsersDB());
     }
 
     //delete folder
-    @DeleteMapping ("/folders/{folderName}")
-    public void deleteFolder (@PathVariable String folderName){
-        Map<String, Mail> mails = foldersServices.deleteFolder(folderName);
+    @DeleteMapping ("/folders/delete")
+    public void deleteFolder (@RequestParam String id, @RequestParam String folderName){
+        Map<String, Mail> mails = foldersServices.deleteFolder(id, folderName, usersService.getUsersDB());
 
         if (mails == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     //delete mail
-    @DeleteMapping ("/folders")
-    public void deleteMail (@RequestParam String name, @RequestParam String id){
-        Mail mail = foldersServices.deleteMail(name, id);
+    @DeleteMapping ("/folders/mail/delete")
+    public void deleteMail (@RequestParam String id, @RequestParam String folderName, @RequestParam List<String> ids){
+        List<Mail> mails = foldersServices.deleteMails(id, folderName, ids, usersService.getUsersDB());
 
-        if (mail == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        for (Mail mail: mails)
+            if (mail == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 }
