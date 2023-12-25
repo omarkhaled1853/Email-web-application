@@ -7,13 +7,15 @@ import com.omarkhaled.simple.webbased.email.program.interfaces.Adapter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 public class UserAdapter implements Adapter<User> {
     private final ObjectMapper mapper = new ObjectMapper();
     private String path = "D:\\Mail Server\\";
+
+    public UserAdapter(ObjectMapper objectMapper) {
+    }
+
     @Override
     public void save(User user, String file) throws IOException {
         path = path.concat(file);
