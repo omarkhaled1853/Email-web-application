@@ -123,7 +123,7 @@ export default {
       this.person.userName = this.userName1;
       this.person.email = this.email1;
       this.person.password = this.password1;
-      // localStorage.setItem("person-inf", JSON.stringify(this.person));
+      
       console.log("omar")
       let res = await fetch("http://localhost:8080/signUp", {
         method: "POST",
@@ -136,6 +136,7 @@ export default {
         console.error("Fetch error:", error);
       });
       if (res.ok) {
+        localStorage.setItem("person-inf", JSON.stringify(this.person));
         this.$router.push("/Home");
       } 
     },

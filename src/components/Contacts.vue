@@ -234,10 +234,8 @@
         priority:'',
         attachments:[],
         },
-        contacts: {
-                'moahemd hassan': ['mohamed@example.com', 'hassan@gmail.com'],
-                'omar khaled': ['omar@example.com', 'khaled@yahoo.com']
-            },
+        contacts: {},
+        ids: []
       };
     },
     async mounted() {
@@ -339,12 +337,14 @@
       },
       async admail(){
         console.warn(this.additionmail,this.itemmail,this.nameedidt)
-    await fetch(`http://localhost:8080/ ?addemail=${this.additionmail}&email=${this.itemmail}&name=${this.nameedidt}`,{
+    await fetch(`http://localhost:8080/contact/add?id=${this.email}&name=${this.nameedidt}&email=${this.additionmail}`,{
           method:"POST",
           })
           this.addmaildialog=false
-
+          this.additionmail = ''
+          location.reload()
       }
+      
      }
   };
   </script>

@@ -74,6 +74,7 @@
             </div>
           </div>
           <button class="new" @click="delet()">Delete the selected <i class="fa-solid fa-trash" style="font-size:25px; color:red"></i></button>
+          <button class="new" @click="folder_selected()">Folder selected <i class="fa-solid fa-trash" style="font-size:25px; color:red"></i></button>
           <button class="new" @click="dia()">new massage</button>
         </div>
         <v-dialog v-model="dialog" width="800" heigth="850"  dark hide-overlay persistent>
@@ -125,7 +126,7 @@
               <v-form>
                 <label v-if="!createNewVisible" style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">select sender folders:</label>
                 <select v-if="!createNewVisible" v-model="foldername"  id="searchtypeid" name="searchtype">
-                  <option v-for="folder in folders_name" :key="folder.name" :option=folder_name >{{ folder.name }}</option>
+                  <option v-for="folder in folders_name" :key="folder" :option=folder_name >{{ folder }}</option>
                 </select>
                 <v-btn v-if="!createNewVisible" style="width:auto; margin-left:20px" @click="addtofolder()">Add To Folder</v-btn>
 
@@ -139,6 +140,34 @@
             <v-card-actions style="background-color:black">
               
               <v-btn style="width:auto; margin-left:500px" @click="closefolder()">close</v-btn>
+            </v-card-actions>
+            <v-card-actions style="background-color:black">
+              
+              <v-btn style="width:90%; margin:auto; " @click="showCreateNew()">Create other folder</v-btn></v-card-actions>
+          </v-card>
+        </v-dialog>
+        <!-- // ///////////////////////////////////////////////////////-->
+        <v-dialog v-model="multifolder" width="600" heigth="600"  dark hide-overlay persistent>
+          <v-card>
+            <v-card-title style="color:white; background-color:#3498db; padding:auto; text-align:center; font-size:35px">Folders<i style="font-size:50px; margin-left:5px;" class="fa-solid fa-folder-plus"> </i></v-card-title>
+            <v-card-text style="background-color:black">
+              <v-form>
+                <label v-if="!createNewVisible" style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">select sender folders:</label>
+                <select v-if="!createNewVisible" v-model="foldername"  id="searchtypeid" name="searchtype">
+                  <option v-for="folder in folders_name" :key="folder" :option=folder_name >{{ folder }}</option>
+                </select>
+                <v-btn v-if="!createNewVisible" style="width:auto; margin-left:20px" @click="folderselected()">Add To Folder</v-btn>
+
+                <label v-if="createNewVisible" style="font-size:20px; font:bold; color:#3498db;background-color:black">creat new:</label>
+                <br v-if="createNewVisible">
+                <input v-if="createNewVisible" v-model="newfoldername" style="width:400px" type="text"  placeholder="new folder name">
+                <v-btn v-if="createNewVisible" style="width:auto;margin-top:15px; margin-left:10px" @click="folderselected()">create and add to folder</v-btn>
+                </v-form>
+            </v-card-text>
+            
+            <v-card-actions style="background-color:black">
+              
+              <v-btn style="width:auto; margin-left:500px" @click="closemultifolder()">close</v-btn>
             </v-card-actions>
             <v-card-actions style="background-color:black">
               
@@ -201,7 +230,7 @@
            
           </tr>
           <tr v-for="item in emails" :key="item.email">
-            <td> <input v-model="choosen" :value="item.id" type="checkbox">   <i @click="folddialog(item.idr)" class="fa-solid fa-folder-plus"> </i> <i @click="contactdialog(item.id,item.sender)" class="fa-solid fa-user-plus"></i>   </td>
+            <td> <input v-model="choosen" :value="item.id" type="checkbox">   <i @click="folddialog(item.id)" class="fa-solid fa-folder-plus"> </i> <i @click="contactdialog(item.id,item.sender)" class="fa-solid fa-user-plus"></i>   </td>
             <td>{{item.priority}}</td>
             <td>{{item.sender}}</td>
             <td>{{item.date}}</td>
@@ -255,20 +284,7 @@ export default {
         priority:'',
         attachments:[],
       },
-      folders_name:[
-            {
-                name:'work',
-            },
-            {
-                name:'social'
-            },
-            {
-                name:'family'
-            },
-            {
-                name:'frinds'
-            },
-            ],
+      folders_name:[],
       emails: [
         {
           id:50,
@@ -276,7 +292,8 @@ export default {
           content:'test'
         }
       ],
-      ids: []
+      ids: [],
+      multifolder: false
     };
   },
   mounted() {
@@ -296,15 +313,30 @@ export default {
      async folddialog(ind){
       this.folder=true
       this.itemid=ind
-     
-      //name of folders
-     // await fetch('http://localhost:8080/',{
-    //       method:"GET"
-    //  }).then(res=>res.json())
-    //  .then(data=>this.folders_name=data);
+      this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+    this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+    console.warn(this.email)
+    this.massage.sender = this.email
+      await fetch(`http://localhost:8080/folders?id=${this.email}`,{
+          method:"GET"
+      }).then(res=>res.json())
+      .then(data=>this.folders_name=data);
+      console.warn(this.folders_name)
+    },
+    async folder_selected(){
+        this.multifolder = true
+        await fetch(`http://localhost:8080/folders?id=${this.email}`,{
+          method:"GET"
+      }).then(res=>res.json())
+      .then(data=>this.folders_name=data);
+      console.warn(this.folders_name)
     },
     closefolder(){
       this.folder=false
+      this.createNewVisible=false
+    },
+    closemultifolder(){
+      this.multifolder=false
       this.createNewVisible=false
     },
     contactdialog(ind,its){
@@ -422,20 +454,31 @@ export default {
     },
     async addtofolder(){
       console.warn(this.itemid,this.foldername)
-      await fetch("http://localhost:8080/  ",
+      this.ids[0] = this.itemid
+      await fetch(`http://localhost:8080/folders/add?id=${this.email}&folderName=${this.foldername}&ids=${this.ids}`,
       {
         method:"POST",
-        body:(this.itemid,this.foldername)
       })
       this.folder=false
+      this.multifolder = false
       this.foldername=''
+    },
+    async folderselected(){
+      console.warn(this.itemid,this.newfoldername)
+      await fetch(`http://localhost:8080/folders/add?id=${this.email}&folderName=${this.newfoldername}&ids=${this.choosen}`,
+      {
+        method:"POST",
+      })
+      this.folder=false
+      this.multifolder = false
+      this.newfoldername=''
     },
    async createnew(){
     console.warn(this.itemid,this.newfoldername)
-      await fetch("http://localhost:8080/  ",
+    this.ids[0] = this.itemid
+      await fetch(`http://localhost:8080/folders/add?id=${this.email}&folderName=${this.newfoldername}&ids=${this.ids}`,
       {
         method:"POST",
-        body:(this.itemid,this.newfoldername)
       })
       this.folder=false
       this.newfoldername=''

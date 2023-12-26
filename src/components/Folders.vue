@@ -35,7 +35,7 @@
              
               <div class="search">
                 <select v-model="selector"  id="searchtypeid" name="searchtype">
-                  <option v-for="folder in folders_name" :key="folder.name" :option= folder_name >{{ folder.name }}</option>
+                  <option v-for="folder in folders_name" :key="folder" :option= folder_name >{{ folder }}</option>
                 </select>
                 <button @click="select()" >select</button>
               </div>
@@ -148,9 +148,11 @@
                   <td>{{item.sender}}</td>
                   <td>{{item.date}}</td>
                   <td> {{item.subject}}</td>
-                  <td>{{item.Content}}</td>
-                  <td><a :href="item.attachments">{{ item.attachments }}</a></td>
-                  <td><i @click="trash(item.index)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
+                  <td>{{item.content}}</td>
+                  <td>
+                    <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
+                  </td>
+                  <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
                 </tr>
                </table>
           </div>
@@ -185,31 +187,21 @@
         priority:'',
         attachments:[],
       },
-        folders_name:[
-            {
-                name:'work',
-            },
-            {
-                name:'social'
-            },
-            {
-                name:'family'
-            },
-            {
-                name:'frinds'
-            },
-            ],
-        emails:[
-
-        ],
+        folders_name:[],
+        emails:[],
         ids: []
       };
     },
     async mounted(){
+      this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+    this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+    console.warn(this.email)
+    this.massage.sender = this.email
       await fetch(`http://localhost:8080/folders?id=${this.email}`,{
           method:"GET"
       }).then(res=>res.json())
       .then(data=>this.folders_name=data);
+      console.warn(this.folders_name)
     },
     methods: {
       dia(itemmail){
@@ -247,17 +239,18 @@
           method:"GET"
      }).then(res=>res.json())
      .then(data=>this.emails=data);
-      
+      console.warn(this.emails)
       },
     async trash(ind){
         this.ids[0] = ind
+        console.warn(this.email, this.selector, this.ids[0])
         await fetch(`http://localhost:8080/folders/mail/delete?id=${this.email}&folderName=${this.selector}&ids=${this.ids}`,{
           method:"DELETE"
        })
         location.reload();
       },
       async delet() {
-        await fetch(`http://localhost:8080/mail/delete?id=${this.email}&folderName=${this.selector}&ids=${this.choosen}`,{
+        await fetch(`http://localhost:8080/folders/mail/delete?id=${this.email}&folderName=${this.selector}&ids=${this.choosen}`,{
           method:"DELETE"
        })
         location.reload();

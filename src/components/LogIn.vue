@@ -99,8 +99,7 @@ export default {
     },
     async login() {
       this.person.email = this.email1;
-      this.person.password = this.password1;
-      localStorage.setItem("person-inf", JSON.stringify(this.person));
+        this.person.password = this.password1;
     //  localStorage.setItem( JSON.stringify(this.person));
       let res = await fetch(`http://localhost:8080/logIn?email=${this.person.email}&password=${this.person.password}`, {
         method: "GET",
@@ -108,6 +107,8 @@ export default {
         console.error("Fetch error:", error);
       });
       if (res.ok) {
+
+        localStorage.setItem("person-inf", JSON.stringify(this.person));
         // alert(res.ok)
         this.$router.push("/Home");
       } else {
