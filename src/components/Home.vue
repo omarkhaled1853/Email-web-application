@@ -58,7 +58,7 @@
                 <option>Sender</option>
                 <option>Receviers</option>
                 <option>Importancy</option>
-                <option>subject</option>
+                <option>Subject</option>
                 <option>Body</option>
                 <option>Attachments</option>
               </select>
@@ -72,9 +72,9 @@
             <div class="select">
               <select v-model="filterby" id="filterid" name="filter">
                 <option>Filter by</option>
-                <option>sender-subject</option>
-                <option>subject-priority</option>
-                <option>sender-priority</option>
+                <option>Sender-Subject</option>
+                <option>Subject-Priority</option>
+                <option>Sender-Priority</option>
               </select>
               <button @click="filter()">filter</button>
             </div>
@@ -460,22 +460,33 @@ export default {
       location.reload()
     },
    async srch(){
-     let res=  await fetch(`http://localhost:8080/    ?searchby=${this.searchby},search=${this.search}`,{
+    console.log(this.searchby,this.search)
+   
+     await fetch(`http://localhost:8080/    ?searchby=${this.searchby},search=${this.search}`,{
         method:"GET"
-   })
-    this.emails=res.data
+   }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.searchby=''
+    this.search=''
+    
     },
     async filter(){
-      let res =await fetch(`http://localhost:8080/    ?filterby=${this.filterby}&filter=${this.filterid}`,{
+    console.log(this.filterby,this.filterid)
+    await fetch(`http://localhost:8080/    ?filterby=${this.filterby}&filter=${this.filterid}`,{
         method:"GET"
-   })
-    this.emails=res.data
+   }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.filter=''
+    this.filterby=''
     },
     async sort(){
-     let res= await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
-        method:"GET"
-     })
-      this.emails=res.data
+      console.log(this.sortby)
+    //  await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
+    //     method:"GET"
+    //  }).then(res => res.json())
+    // .then(data =>this.emails=data);
+    this.sortby=''
+      
     },
    async trash(ind){
     this.ids[0] = ind

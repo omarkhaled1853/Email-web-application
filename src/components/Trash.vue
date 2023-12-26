@@ -357,10 +357,10 @@
       this.emails=res.data
       },
       async sort(){
-       let res= await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
+        await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
           method:"GET"
        })
-        this.emails=res.data
+       
       },
      async trash(ind){
         this.ids[0] = ind
