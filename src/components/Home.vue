@@ -51,6 +51,19 @@
             </div>
           </div>
           <div class="filter">
+            <input v-model="filterid" style="margin-left:5px;" placeholder=" filterby...." for="searchtypeid">
+
+            <div class="select">
+              <select v-model="filterby" id="filterid" name="filter">
+                <option>Filter by</option>
+                <option>Sender-Subject</option>
+                <option>Subject-Priority</option>
+                <option>Sender-Priority</option>
+              </select>
+              <button @click="filter()">filter</button>
+            </div>
+          </div>
+          <div class="filter">
             <div class="sort">
               <select v-model="sortby" id="sortid" name="sort">
                 <option>Sort by</option>
@@ -66,19 +79,7 @@
             </div>
           </div>
 
-          <div class="filter">
-            <input v-model="filterid" style="margin-left:5px;" placeholder=" filterby...." for="searchtypeid">
-
-            <div class="select">
-              <select v-model="filterby" id="filterid" name="filter">
-                <option>Filter by</option>
-                <option>Sender-Subject</option>
-                <option>Subject-Priority</option>
-                <option>Sender-Priority</option>
-              </select>
-              <button @click="filter()">filter</button>
-            </div>
-          </div>
+          
           <button class="new" @click="delet()">Delete the selected <i class="fa-solid fa-trash" style="font-size:25px; color:red"></i></button>
           <button class="new" @click="folder_selected()">Folder selected <i class="fa-solid fa-up-down-left-right"></i></button>
           <button class="new" @click="dia()">new massage</button>
@@ -306,6 +307,39 @@ export default {
       },
       folders_name:[],
       emails: [
+        {
+          sender:'mohamed@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:5,
+          attachments:['page2.gpg'],
+          date:'26/12/2023',
+        },
+        {
+          sender:'omar@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:5,
+          attachments:['page1.gpg'],
+          date:'26/12/2023',
+        },
+        {
+          sender:'medo@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:5,
+          attachments:['page3.gpg'],
+          date:'25/12/2023',
+        },
+        {
+          sender:'hoda@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:5,
+          attachments:['page5.gpg'],
+          date:'25/12/2023',
+        },
+
         
       ],
       ids: [],

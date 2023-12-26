@@ -48,21 +48,6 @@
                 <button @click="srch()" >Search</button>
               </div>
             </div>
-            <div class="filter">
-              <div class="sort">
-                <select v-model="sortby" id="sortid" name="sort">
-                  <option>Sort by</option>
-                  <option>Default</option>
-                  <option>Sender</option>
-                  <option>Receviers</option>
-                  <option>Importancy</option>
-                  <option>Subject</option>
-                  <option>Body</option>
-                  <option>Attachments</option>
-                </select>
-                <button @click="sort()">sort</button>
-              </div>
-            </div>
             <button class="new" @click="delet()">Delete the selected <i class="fa-solid fa-trash" style="font-size:25px; color:red"></i></button>
             <button class="new" @click="dia()">new massage</button>
           </div>
