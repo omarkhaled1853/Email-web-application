@@ -63,6 +63,7 @@
                 <button @click="sort()">sort</button>
               </div>
             </div>
+            <button class="new" @click="delet()">Delete the selected <i class="fa-solid fa-trash" style="font-size:25px; color:red"></i></button>
             <button class="new" @click="dia()">new massage</button>
           </div>
           <v-dialog v-model="addmaildialog" width="400" heigth="850"  dark hide-overlay persistent>
@@ -90,13 +91,14 @@
                 <v-form>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
                   <br>
-                  <input v-model="massage.receiver" style="width:600px" type="text" placeholder=" user@example.com" :value="this.itemmail"  id="toid" disabled>
+                  <input v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
+                  <span v-if="isToInvalid" style="color: red;">Invalid email format</span>
                   <br>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
                   <br>
-                  <input v-model="massage.sender" style="width:600px" type="text" placeholder=" useremail" :value="email"  disabled>
+                  <input style="width:600px" type="text" placeholder=" useremail" :value="this.email"  disabled>
                   <br>
-                  <label style="font-size:20px; font:bold; color:#3498db;background-color:black">Subject:</label>
+                  <label style="font-size:20px; font:bold; color:#3498db;background-color:black">subject:</label>
                   <br>
                   <input v-model="massage.subject" style="width:600px" type="text" placeholder=" (0-30)characters">
                   <br>
@@ -106,7 +108,8 @@
                 </v-form>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="#" >attachments:</label>
               </v-card-text>
-              <input style="padding-left:30px"  type="file"  multiple @change="handleFileChange">
+              <input ref="fileupload" type="file" name="fileupload" multiple @change="handleFileChange" />
+              <button style="width:auto" @click="uploadFiles">Upload</button>
               <v-card-actions style="background-color:black">
                 
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">priority:</label>
@@ -180,8 +183,9 @@
             </tr>
             <tr v-for="(emails, name) in contacts" :key="name">
               <td>
+                  <input v-model="choosen" :value="item.id" type="checkbox">
                   <i @click="editf(name)" style="font-size:25px; color:#3498db;" class="fa-solid fa-pen-to-square"></i>
-                  <button class="new" @click="addmail(name)">add email</button>
+                  <button style="margin-left:25px;"  @click="addmail(name)" ><i style="font-size:25px; " class="fa-solid fa-plus"></i></button>
               </td>
               <td>{{ name }}</td>
               <td>
@@ -235,7 +239,8 @@
         attachments:[],
         },
         contacts: {},
-        ids: []
+        ids: [],
+        choosen:[],
       };
     },
     async mounted() {
@@ -250,6 +255,31 @@
     },
     
     methods: {
+      handleFileChange() {
+      this.attachments = Array.from(this.$refs.fileupload.files);
+      console.warn( this.attachments)
+    },
+    async uploadFiles() {
+      try {
+        if (this.attachments.length === 0) {
+          alert("Please select at least one file before uploading.");
+          return;
+        }
+        let formData = new FormData();
+        this.attachments.forEach((file, index) => {
+          formData.append(`file_${index}`, file);
+        });
+        const response = await fetch('http://localhost:8080/photoz', {
+          method: "POST",
+          body: formData
+        });
+        const result = await response.text();
+        alert(result);
+      } catch (error) {
+        console.error('Error uploading files:', error);
+      }
+    
+  },
       addmail(nms){
         this.addmaildialog=true
         this.nameedidt=nms

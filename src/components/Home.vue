@@ -6,6 +6,7 @@
     </label>
     <nav id="sidebar">
       <div class="title">Menu</div>
+
       <ul class="list-items">
         <router-link to=""></router-link>
         <li><router-link to="/Home">Inbox</router-link></li>
@@ -23,10 +24,12 @@
   </div>
   <div class="content">
     <div class="header">
+
       <h1 style="color: aliceblue; padding-top: 10px">O3M-Mail</h1>
       <button style="width:auto; font-size:large;  background-color:darkgrey;  height:40px;margin:auto; margin-left:2% ;" @click="reload()">reload</button>
       <h1 class="box-title">INBOX</h1>
       <button style="width:auto; background-color:darkgrey; border-radius: 10px; font-size:large; height:50px;margin:auto;margin-left:30% ;" @click="setting()">Setting <i  style="font-size:40px" class="fa-solid fa-gear"></i></button>
+      
     </div>
     <div class="b2">
       <div class="container">
@@ -59,22 +62,25 @@
                 <option>Body</option>
                 <option>Attachments</option>
               </select>
-              <button @click="sort()">sort</button>
+              <button style="margin-left:15px" @click="sort()">sort</button>
             </div>
           </div>
 
           <div class="filter">
+            <input v-model="filterid" style="margin-left:5px;" placeholder=" filterby...." for="searchtypeid">
+
             <div class="select">
               <select v-model="filterby" id="filterid" name="filter">
                 <option>Filter by</option>
-                <option>sender</option>
-                <option>subject</option>
+                <option>sender-subject</option>
+                <option>subject-priority</option>
+                <option>sender-priority</option>
               </select>
               <button @click="filter()">filter</button>
             </div>
           </div>
           <button class="new" @click="delet()">Delete the selected <i class="fa-solid fa-trash" style="font-size:25px; color:red"></i></button>
-          <button class="new" @click="folder_selected()">Folder selected <i class="fa-solid fa-trash" style="font-size:25px; color:red"></i></button>
+          <button class="new" @click="folder_selected()">Folder selected <i class="fa-solid fa-up-down-left-right"></i></button>
           <button class="new" @click="dia()">new massage</button>
         </div>
         <v-dialog v-model="dialog" width="800" heigth="850"  dark hide-overlay persistent>
@@ -101,7 +107,8 @@
               </v-form>
               <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="#" >attachments:</label>
             </v-card-text>
-            <input style="padding-left:30px"  type="file"  multiple @change="handleFileChange">
+            <input ref="fileupload" type="file" name="fileupload" multiple @change="handleFileChange" />
+            <button style="width:auto" @click="uploadFiles">Upload</button>
             <v-card-actions style="background-color:black">
               
               <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">priority:</label>
@@ -215,8 +222,19 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-      
+
         <div class="info">
+          <label for="pageSlider" class="slider-label">Page:</label>
+          <input
+            id="pageSlider"
+            type="range"
+            :min="1"
+            :max="totalPages"
+            v-model="currentPage"
+            @input="handlePageChange"
+            class="page-slider"
+          />
+          <span class="current-page">{{ currentPage }}</span>
          <table border="2px">
           <tr>
             <td>       </td>
@@ -253,9 +271,10 @@
 </template>
 
 <script >
-// import "@fortawesome/fontawesome-free/css/all.css"; // Import the styles
+
 export default {
   name: "HoMe",
+  
   data() {
     return {
       user_name:'' ,
@@ -265,6 +284,7 @@ export default {
       searchby:'',
       sortby:'',
       filterby:'',
+      filterid:'',
       choosen:[],
       folder:false,
       foldername:'',
@@ -286,14 +306,13 @@ export default {
       },
       folders_name:[],
       emails: [
-        {
-          id:50,
-          sender:"Ali",
-          content:'test'
-        }
+        
       ],
       ids: [],
-      multifolder: false
+      multifolder: false,
+      currentPage: 1,
+      totalPages: 10
+     
     };
   },
   mounted() {
@@ -307,6 +326,38 @@ export default {
     .then(data =>this.emails=data);
   },
   methods: {
+    handlePageChange() {
+      console.log('Page changed to:', this.currentPage);
+      fetch(`http://localhost:8080/mail/inbox?id=${this.email}&page=${this.currentPage}`, {
+      method: "GET",
+    }).then(res => res.json())
+    .then(data =>this.emails=data);
+    },
+    handleFileChange() {
+      this.attachments = Array.from(this.$refs.fileupload.files);
+      console.warn( this.attachments)
+    },
+    async uploadFiles() {
+      try {
+        if (this.attachments.length === 0) {
+          alert("Please select at least one file before uploading.");
+          return;
+        }
+        let formData = new FormData();
+        this.attachments.forEach((file, index) => {
+          formData.append(`file_${index}`, file);
+        });
+        const response = await fetch('http://localhost:8080/photoz', {
+          method: "POST",
+          body: formData
+        });
+        const result = await response.text();
+        alert(result);
+      } catch (error) {
+        console.error('Error uploading files:', error);
+      }
+    
+  },
     dia(){
       this.dialog=!this.dialog
     },
@@ -408,10 +459,6 @@ export default {
       this.dialog=false
       location.reload()
     },
-    handleFileChange(event) {
-      console.log(event.target.files)
-      this.massage.attachments = event.target.files;
-    },
    async srch(){
      let res=  await fetch(`http://localhost:8080/    ?searchby=${this.searchby},search=${this.search}`,{
         method:"GET"
@@ -419,7 +466,7 @@ export default {
     this.emails=res.data
     },
     async filter(){
-      let res =await fetch(`http://localhost:8080/    ?filterby=${this.filterby}`,{
+      let res =await fetch(`http://localhost:8080/    ?filterby=${this.filterby}&filter=${this.filterid}`,{
         method:"GET"
    })
     this.emails=res.data
@@ -498,11 +545,36 @@ export default {
 </script>
 
 <style scoped>
+.slider-label {
+  margin-right: 10px;
+  color: rgb(9, 2, 2);
+  font-weight: bold; 
+}
+
+.page-slider {
+  background: white; 
+}
+
+
+.current-page {
+  margin-left: 5px;
+  color: white;
+  font-weight: bold; 
+}
+
+.page-slider::-webkit-slider-thumb {
+  transition: transform 0.3s ease-in-out;
+}
+
+.page-slider:hover::-webkit-slider-thumb {
+  transform: scale(1.2); 
+}
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
 input[type="file"] {
   color: #3498db; 
   background-color: black;
   padding: 10px; 
+  
   
 }
 .box-title {
@@ -511,29 +583,28 @@ input[type="file"] {
   text-align: center;
   padding-top: 10px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  font-size: 36px; /* You can adjust the font size as needed */
-  transition: color 0.3s ease; /* Smooth transition for color change */
+  font-size: 36px; 
+  transition: color 0.3s ease; 
 }
 .box-title:hover {
-  color:  #3498db; /* Change the color on hover */
+  color:  #3498db; 
 }
 .new {
   width:auto;
   height: 60px;
   margin-top: 15px;
-  right: 0;
-  margin-left: 5%;
-  background-color:#3498db; /* Green background color */
-  color: white; /* White text color */
-  text-align: center; /* Center text */
-  font-size: 16px; /* Set font size */
-  cursor: pointer; /* Add a pointer cursor on hover */
-  transition: transform 0.3s ease-in-out; /* Add transition for scaling effect */
+  margin-left: 2%;
+  background-color:#3498db; 
+  color: white; 
+  text-align: center; 
+  font-size: 16px;
+  cursor: pointer; 
+  transition: transform 0.3s ease-in-out; 
 }
 
-/* Add hover effect to scale the button */
+
 .new:hover {
-  transform: scale(1.1); /* Scale the button on hover */
+  transform: scale(1.1); 
 }
 table {
   border-collapse: collapse;
@@ -609,13 +680,13 @@ button:hover {
   50%,
   80%,
   100% {
-    transform: translateY(0); /* Bounce height */
+    transform: translateY(0); 
   }
   40% {
-    transform: translateY(-10px); /* Bounce height at its peak */
+    transform: translateY(-10px); 
   }
   60% {
-    transform: translateY(-5px); /* Bounce height during the bounce */
+    transform: translateY(-5px); 
   }
 }
 label {

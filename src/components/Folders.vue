@@ -41,6 +41,7 @@
               </div>
             </div>
            
+            <button class="new" @click="delet()">Delete the selected <i class="fa-solid fa-trash" style="font-size:25px; color:red"></i></button>
             <button class="new" @click="dia()">new massage</button>
           </div>
           <v-dialog v-model="dialog" width="800" heigth="850"  dark hide-overlay persistent>
@@ -50,13 +51,14 @@
                 <v-form>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
                   <br>
-                  <input v-model="massage.receiver" style="width:600px" type="text" placeholder=" user@example.com" :value="this.itemmail"  id="toid" disabled>
+                  <input v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
+                  <span v-if="isToInvalid" style="color: red;">Invalid email format</span>
                   <br>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
                   <br>
-                  <input v-model="massage.sender" style="width:600px" type="text" placeholder=" useremail" :value="email"  disabled>
+                  <input style="width:600px" type="text" placeholder=" useremail" :value="this.email"  disabled>
                   <br>
-                  <label style="font-size:20px; font:bold; color:#3498db;background-color:black">Subject:</label>
+                  <label style="font-size:20px; font:bold; color:#3498db;background-color:black">subject:</label>
                   <br>
                   <input v-model="massage.subject" style="width:600px" type="text" placeholder=" (0-30)characters">
                   <br>
@@ -66,8 +68,8 @@
                 </v-form>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="#" >attachments:</label>
               </v-card-text>
-              <input style="padding-left:30px"  type="file"  multiple @change="handleFileChange">
-              <v-card-actions style="background-color:black">
+              <input ref="fileupload" type="file" name="fileupload" multiple @change="handleFileChange" />
+              <button style="width:auto" @click="uploadFiles">Upload</button>              <v-card-actions style="background-color:black">
                 
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">priority:</label>
                 <select id="menu" name="menu" v-model="massage.priority">
@@ -84,7 +86,7 @@
             </v-card>
           </v-dialog>
           <!-- ///////////////////////////////////////////////////////////// -->
-          <v-dialog v-model="edit" width="600" heigth="600"  dark hide-overlay persistent>
+          <v-dialog v-model="renamedialoge" width="600" heigth="600"  dark hide-overlay persistent>
             <v-card>
               <v-card-title style="color:white; background-color:#3498db; padding:auto; text-align:center; font-size:35px">edit<i class="fa-solid fa-pen-to-square"></i></v-card-title>
               <v-card-text style="background-color:black">
@@ -92,12 +94,7 @@
                     <label style="font-size:20px; font:bold; color:#3498db;background-color:black">new name:</label>
                     <br>
                     <input v-model="this.newname" style="width:600px" type="text" placeholder=" new name"   id="toid" >
-                    <br>
-                    <label style="font-size:20px; font:bold; color:#3498db;background-color:black">email:</label>
-                    <br>
-                    <input style="width:600px" type="text" :value="this.itemmail"  disabled>
-                   
-                  <v-btn style="width:auto;margin-top:15px; margin-left:10px" @click="save(this.itemmail)">Save</v-btn>
+                  <v-btn style="width:auto;margin-top:15px; margin-left:10px" @click="save()">Save</v-btn>
                   </v-form>
               </v-card-text>
   
@@ -130,10 +127,16 @@
             </v-card>
           </v-dialog>
           <div class="info">
-            <div style=" text-shadow:0 0 0 15px; #08daff; text-align: center; width:100%"><h1 class="grad">{{ selector }}</h1></div>
-               
+            <div style="text-shadow: 0 0 0 15px; #08daff; text-align: center; width: 100%">
+              <h1 title="click to show sittings" style="cursor:pointer" class="grad" contenteditable="true" v-on:click="toggleIconsVisibility()">
+                  {{ selector }}
+                  <i @click="rename(selector)" title="click to rename" style="color:aquamarine" class="fa-solid fa-pen-to-square fa-icon"></i>
+                  <i @click="delfolder()"  title="click to remove folder" style="color:aquamarine" class="fa-solid fa-trash fa-icon"></i>
+              </h1>
+          </div>
             <table border="2px">
                  <tr>
+                  <td>  </td>
                   <td>priority</td>
                   <td>Sender</td>
                   <td>Date</td>
@@ -144,6 +147,7 @@
                  
                 </tr>
                 <tr v-for="item in emails" :key="item.email">
+                  <td><input v-model="choosen" :value="item.id" type="checkbox"> </td>
                   <td>{{item.priority}}</td>
                   <td>{{item.sender}}</td>
                   <td>{{item.date}}</td>
@@ -152,7 +156,7 @@
                   <td>
                     <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
                   </td>
-                  <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
+                  <td><i @click="trash(item.id)" class="fa-solid fa-x" style="font-size:25px; color:red;"></i></td>
                 </tr>
                </table>
           </div>
@@ -177,7 +181,10 @@
         email: "",
         dialog:false,
         selector:'',
-        newname:'',        
+        newname:'',    
+        choosen:[],   
+        rnmame:'',
+        renamedialoge:false, 
         sittingdialog:false,
         massage:{
         sender:'',
@@ -187,23 +194,50 @@
         priority:'',
         attachments:[],
       },
-        folders_name:[],
+        folders_name:[
+          'work','social'
+        ],
         emails:[],
         ids: []
       };
     },
     async mounted(){
-      this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
-    this.email = JSON.parse(localStorage.getItem("person-inf")).email;
-    console.warn(this.email)
-    this.massage.sender = this.email
-      await fetch(`http://localhost:8080/folders?id=${this.email}`,{
-          method:"GET"
-      }).then(res=>res.json())
-      .then(data=>this.folders_name=data);
-      console.warn(this.folders_name)
+    //   this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+    // this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+    // console.warn(this.email)
+    // this.massage.sender = this.email
+    //   await fetch(`http://localhost:8080/folders?id=${this.email}`,{
+    //       method:"GET"
+    //   }).then(res=>res.json())
+    //   .then(data=>this.folders_name=data);
+    //   console.warn(this.folders_name)
     },
     methods: {
+      handleFileChange() {
+      this.attachments = Array.from(this.$refs.fileupload.files);
+      console.warn( this.attachments)
+    },
+    async uploadFiles() {
+      try {
+        if (this.attachments.length === 0) {
+          alert("Please select at least one file before uploading.");
+          return;
+        }
+        let formData = new FormData();
+        this.attachments.forEach((file, index) => {
+          formData.append(`file_${index}`, file);
+        });
+        const response = await fetch('http://localhost:8080/photoz', {
+          method: "POST",
+          body: formData
+        });
+        const result = await response.text();
+        alert(result);
+      } catch (error) {
+        console.error('Error uploading files:', error);
+      }
+    
+  },
       dia(itemmail){
         this.dialog=!this.dialog
         this.itemmail=itemmail
@@ -225,13 +259,39 @@
       reload(){
         location.reload();
       },
-     async send(){
-        localStorage.setItem("massage",JSON.stringify(this.massage))
-        this.dialog=false
-        await fetch("http://localhost:8080/send",{
-          method:"POST",
-          body:JSON.stringify(this.massage)
+      rename(){
+      this.renamedialoge=true
+      },
+      close_edit(){
+        this.renamedialoge=false
+      },
+      //rename folder
+     async save(){
+        await fetch("http://localhost:8080/  ",
+        {
+          method:"PUT",
+          body:(this.newname,this.selector)
         })
+      },
+      //delete folder
+     async delfolder(){
+      await fetch(`http://localhost:8080/     ?id=${this.email}&folderName=${this.selector}`,{
+          method:"DELETE"
+       })
+        location.reload();
+      },
+     async send(){
+      await fetch("http://localhost:8080/mail/sent/create",{
+        method:"POST",
+        headers: {
+          Accept : "application/json",
+          "content-type" : "application/json"
+        },
+        body:JSON.stringify(this.massage)
+      })
+      localStorage.setItem("massage",JSON.stringify(this.massage))
+      this.clear()
+      this.dialog=false
   
       },
      async select(){
@@ -254,7 +314,14 @@
           method:"DELETE"
        })
         location.reload();
-      }
+      },
+      toggleIconsVisibility() {
+            var icons = document.querySelectorAll('.fa-icon');
+            icons.forEach(function(icon) {
+                // Toggle the visibility of each icon
+                icon.style.display = (icon.style.display === 'none' || icon.style.display === '') ? 'inline' : 'inline';
+            });
+        }
      }
   };
   </script>
@@ -572,5 +639,18 @@
     font-size: 40px;
     font-weight: 700;
   }
+  .grad {
+    text-shadow: 0 0 0 15px #08daff;
+    text-align: center;
+    width: 100%;
+}
+
+.fa-icon {
+    display: none; /* Initially hide the icons */
+    margin-left: 5px; /* Add some spacing between the icons and the text */
+    cursor: pointer;
+}
+
+
   </style>
   
