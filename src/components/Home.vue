@@ -91,6 +91,7 @@
               <v-form>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
                 <br>
+                <v-btn @click="uploadFile">upload</v-btn>
                 <input v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
                 <span v-if="isToInvalid" style="color: red;">Invalid email format</span>
                 <br>
@@ -108,8 +109,7 @@
               </v-form>
               <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="#" >attachments:</label>
             </v-card-text>
-            <input ref="fileupload" type="file" name="fileupload" multiple @change="handleFileChange" />
-            <button style="width:auto" @click="uploadFiles">Upload</button>
+            <input id="fileupload" type="file" name="fileupload" multiple />
             <v-card-actions style="background-color:black">
               
               <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">priority:</label>
@@ -255,7 +255,7 @@
             <td>{{item.date}}</td>
             <td>{{item.subject}}</td>
             <td>{{item.content}}</td><td>
-              <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
+              <v-btn v-for="attach in item.attachments" :key="attach.id"  @click="downloadAttachment(attach.id, attach.attachmentName, item.id)">{{ attach.attachmentName }}</v-btn>
             </td>
             <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
           </tr>
@@ -333,31 +333,6 @@ export default {
     }).then(res => res.json())
     .then(data =>this.emails=data);
     },
-    handleFileChange() {
-      this.attatch = this.$refs.fileupload.files;
-      console.warn( this.attatch)
-    },
-    async uploadFiles() {
-      try {
-        if (this.attachments.length === 0) {
-          alert("Please select at least one file before uploading.");
-          return;
-        }
-        let formData = new FormData();
-        this.attachments.forEach((file, index) => {
-          formData.append(`file_${index}`, file);
-        });
-        const response = await fetch('http://localhost:8080/photoz', {
-          method: "POST",
-          body: formData
-        });
-        const result = await response.text();
-        alert(result);
-      } catch (error) {
-        console.error('Error uploading files:', error);
-      }
-    
-  },
     dia(){
       this.dialog=!this.dialog
     },
@@ -446,8 +421,8 @@ export default {
         });
     },
    async send(){
-    this.massage.attachments = this.attatch[0].name
-    await fetch("http://localhost:8080/mail/sent/create",{
+    await this.uploadFile();
+    await fetch(`http://localhost:8080/mail/sent/create`,{
         method:"POST",
         headers: {
           Accept : "application/json",
@@ -550,6 +525,26 @@ export default {
       })
       this.contacts=false
       this.newname=''
+    },
+    async uploadFile() {
+        let formData = new FormData();
+        let files = document.getElementById('fileupload').files;
+        for (let i = 0; i < files.length; i++) {
+            formData.append("data", files[i]);
+        }
+        await fetch('http://localhost:8080/mail/sent/attachments', {
+            method: "POST",
+            body: formData
+        }).then(res => res.json())
+        .then(data => this.massage.attachments = data);
+    },
+    async downloadAttachment(attachmentId, attachmentName,mailId){
+      let res = await fetch(`http://localhost:8080/mail/attachments/sent/download?id=${this.email}&mailId=${mailId}&attachmentId=${attachmentId}`,{
+        method : "GET"
+      });
+      if(res.ok){
+        console.alert(`${attachmentName} dowanloaded`)
+      }
     }
    }
 };

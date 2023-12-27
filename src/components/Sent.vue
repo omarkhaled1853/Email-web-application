@@ -147,7 +147,7 @@
               <td>{{item.content}}</td>
               <td>{{item.priority}}</td>
               <td>
-                <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
+              <a v-for="attach in item.attachments" :key="attach.id" :href='attach' @click="downloadAttachment(attach.id)">{{ attach.attachmentName }}</a>
               </td>
               <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
             </tr>
