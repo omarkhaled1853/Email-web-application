@@ -89,11 +89,15 @@
             <v-card-title style="color:white; background-color:#3498db; padding:auto; text-align:center; font-size:35px">new massage</v-card-title>
             <v-card-text style="background-color:black">
               <v-form>
+               
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
+                <v-btn @click="multyres()" style="width:auto;rigth:0;margin-left:200px;margin-bottom:10px;background-color:darkgoldenrod;color:black">clock to multy recievers</v-btn>
                 <br>
-                <input v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
+                <input v-if="!multi" v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
+                <input v-if="multi" v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user1@CSED.com-user2@CSED.com-user3@CSED.com" id="toid">
                 <span v-if="isToInvalid" style="color: red;">Invalid email format</span>
                 <br>
+                
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
                 <br>
                 <input style="width:600px" type="text" placeholder=" useremail" :value="this.email"  disabled>
@@ -246,18 +250,20 @@
             <td>Content</td>
             <td>Attachments</td>
             <td>Move to trash <i class="fa-solid fa-trash" style="font-size:15px; color:red"></i></td>
-           
           </tr>
-          <tr v-for="item in emails" :key="item.email">
-            <td> <input v-model="choosen" :value="item.id" type="checkbox">   <i @click="folddialog(item.id)" class="fa-solid fa-folder-plus"> </i> <i @click="contactdialog(item.id,item.sender)" class="fa-solid fa-user-plus"></i>   </td>
-            <td>{{item.priority}}</td>
-            <td>{{item.sender}}</td>
-            <td>{{item.date}}</td>
-            <td>{{item.subject}}</td>
-            <td>{{item.content}}</td><td>
-              <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
+          <tr  v-for="index in getRangeStartToEnd(start, end)" :key="index">
+            <template v-if="emails[index]">
+            <td>  <input  @click="print(emails[index].id)" :value="emails[index].id" type="checkbox">   <i @click="folddialog(emails[index].id)" class="fa-solid fa-folder-plus"> </i> <i @click="contactdialog(emails[index].id,emails[index].sender)" class="fa-solid fa-user-plus"></i> </td>
+            <td>{{ emails[index].priority }}</td>
+            <td>{{ emails[index].sender }}</td>
+            <td>{{ emails[index].date }}</td>
+            <td>{{ emails[index].subject }}</td>
+            <td>{{ emails[index].content }}</td>
+            <td>
+              <a v-for="attach in emails[index].attachments" :key="attach.id" :href="attach">{{ attach }}</a>
             </td>
-            <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
+            <td><i @click="trash(emails[index].id)" class="fa-solid fa-x" style="font-size:25px; color:red;"></i></td>
+          </template>
           </tr>
          </table>
         </div>
@@ -306,32 +312,142 @@ export default {
         attachments:[],
       },
       folders_name:[],
-      emails: [],
+      emails: [ {
+
+          id:'60',
+          sender:'mohamed@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:5,
+          attachments:['page2.gpg'],
+          date:'26/12/2023',
+        },
+        {
+          id:'9',
+          sender:'omar@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:5,
+          attachments:['page1.gpg'],
+          date:'26/12/2023',
+        },
+        {
+          id:'3',
+          sender:'medo@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:5,
+          attachments:['page3.gpg'],
+          date:'25/12/2023',
+        },
+        {
+          id:'8',
+          sender:'hoda@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:5,
+          attachments:['page5.gpg'],
+          date:'25/12/2023',
+        },
+        {
+          id:'1',
+          sender:'hoda@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:5,
+          attachments:['page5.gpg'],
+          date:'25/12/2023',
+        },
+        {
+          id:'5',
+          sender:'hoda@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:1,
+          attachments:['page5.gpg'],
+          date:'25/12/2023',
+        },
+        {
+          id:'10',
+          sender:'hoda@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:3,
+          attachments:['page5.gpg'],
+          date:'27/12/2023',
+        },
+        {
+          id:'6',
+          sender:'hoda@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:5,
+          attachments:['page5.gpg'],
+          date:'27/12/2023',
+        },
+        {
+          id:'4',
+          sender:'hema@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:5,
+          attachments:['page5.gpg'],
+          date:'27/12/2023',
+        },
+        {
+          id:'2',
+          sender:'adham@CSED.com',
+          subject:'test front',
+          content:'test front for the lab',
+          priority:2,
+          attachments:['page5.gpg'],
+          date:'26/12/2023',
+        },
+],
       ids: [],
       multifolder: false,
+      attatch : '',
       currentPage: 1,
-      totalPages: '',
-      attatch : ''
+      itemsPerPage: 3,
+      choos:'',
+      multi:false
     };
   },
+  computed: {
+    start() {
+      return (this.currentPage - 1) * this.itemsPerPage;
+    },
+    end() {
+      return this.start + this.itemsPerPage - 1;
+    },
+    totalPages() {
+      return Math.ceil(this.emails.length / this.itemsPerPage);
+    },
+  },
   async mounted() {
-    this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
-    this.email = JSON.parse(localStorage.getItem("person-inf")).email;
-    console.warn(this.email)
-    this.massage.sender = this.email
-    await fetch(`http://localhost:8080/mail/inbox?id=${this.email}`, {
-      method: "GET",
-    }).then(res => res.json())
-    .then(data =>this.emails=data);
-    this.totalPages = Math.ceil(this.emails.length / 5)
+    
+    // this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+    // this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+    // console.warn(this.email)
+    // this.massage.sender = this.email
+    // await fetch(`http://localhost:8080/mail/inbox?id=${this.email}`, {
+    //   method: "GET",
+    // }).then(res => res.json())
+    // .then(data =>this.emails=data);
+    // this.totalPages = Math.ceil(this.emails.length / 5)
   },
   methods: {
+    print(ind){
+      console.log(ind)
+      this.choosen.push(ind)
+      console.log(this.choosen)
+    },
+    getRangeStartToEnd(start, end) {
+      return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+    },
     handlePageChange() {
+      this.start=this.currentPage
       console.log('Page changed to:', this.currentPage);
-      fetch(`http://localhost:8080/mail/inbox?id=${this.email}&page=${this.currentPage}`, {
-      method: "GET",
-    }).then(res => res.json())
-    .then(data =>this.emails=data);
     },
     handleFileChange() {
       this.attatch = this.$refs.fileupload.files;
@@ -362,6 +478,7 @@ export default {
       this.dialog=!this.dialog
     },
      async folddialog(ind){
+      console.log("id"+ind)
       this.folder=true
       this.itemid=ind
       this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
@@ -403,6 +520,9 @@ export default {
     },
     showCreateNew(){
       this. createNewVisible=!this.createNewVisible
+    },
+    multyres(){
+      this.multi=true;
     },
     clear(){
       this.massage.receiver=''
@@ -550,7 +670,10 @@ export default {
       })
       this.contacts=false
       this.newname=''
-    }
+    },
+    getEmailId(item) {
+      return item ? item.id || '' : '';
+    },
    }
 };
 </script>
@@ -616,6 +739,7 @@ input[type="file"] {
 
 .new:hover {
   transform: scale(1.1); 
+  
 }
 table {
   border-collapse: collapse;
