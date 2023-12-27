@@ -41,10 +41,10 @@
                 <option>Search by</option>
                 <option>Date</option>
                 <option>Sender</option>
-                <option>Receviers</option>
-                <option>Importancy</option>
-                <option>subject</option>
-                <option>Body</option>
+                <option>Recevier</option>
+                <option>Priority</option>
+                <option>Subject</option>
+                <option>Content</option>
                 <option>Attachments</option>
               </select>
               <button @click="srch()" >Search</button>
@@ -67,13 +67,13 @@
             <div class="sort">
               <select v-model="sortby" id="sortid" name="sort">
                 <option>Sort by</option>
-                <option>Default</option>
+                <option>Date</option>
                 <option>Sender</option>
-                <option>Receviers</option>
-                <option>Importancy</option>
+                <option>Recevier</option>
+                <option>Priority</option>
                 <option>Subject</option>
-                <option>Body</option>
-                <option>Attachments</option>
+                <option>Content</option>
+                <option>Attachment</option>
               </select>
               <button style="margin-left:15px" @click="sort()">sort</button>
             </div>
@@ -306,58 +306,24 @@ export default {
         attachments:[],
       },
       folders_name:[],
-      emails: [
-        {
-          sender:'mohamed@CSED.com',
-          subject:'test front',
-          content:'test front for the lab',
-          priority:5,
-          attachments:['page2.gpg'],
-          date:'26/12/2023',
-        },
-        {
-          sender:'omar@CSED.com',
-          subject:'test front',
-          content:'test front for the lab',
-          priority:5,
-          attachments:['page1.gpg'],
-          date:'26/12/2023',
-        },
-        {
-          sender:'medo@CSED.com',
-          subject:'test front',
-          content:'test front for the lab',
-          priority:5,
-          attachments:['page3.gpg'],
-          date:'25/12/2023',
-        },
-        {
-          sender:'hoda@CSED.com',
-          subject:'test front',
-          content:'test front for the lab',
-          priority:5,
-          attachments:['page5.gpg'],
-          date:'25/12/2023',
-        },
-
-        
-      ],
+      emails: [],
       ids: [],
       multifolder: false,
       currentPage: 1,
-      totalPages: 10
-     
+      totalPages: '',
+      attatch : ''
     };
   },
-  mounted() {
+  async mounted() {
     this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
     this.email = JSON.parse(localStorage.getItem("person-inf")).email;
     console.warn(this.email)
     this.massage.sender = this.email
-    fetch(`http://localhost:8080/mail/inbox?id=${this.email}`, {
+    await fetch(`http://localhost:8080/mail/inbox?id=${this.email}`, {
       method: "GET",
     }).then(res => res.json())
     .then(data =>this.emails=data);
+    this.totalPages = Math.ceil(this.emails.length / 5)
   },
   methods: {
     handlePageChange() {
@@ -368,8 +334,8 @@ export default {
     .then(data =>this.emails=data);
     },
     handleFileChange() {
-      this.attachments = Array.from(this.$refs.fileupload.files);
-      console.warn( this.attachments)
+      this.attatch = this.$refs.fileupload.files;
+      console.warn( this.attatch)
     },
     async uploadFiles() {
       try {
@@ -480,6 +446,7 @@ export default {
         });
     },
    async send(){
+    this.massage.attachments = this.attatch[0].name
     await fetch("http://localhost:8080/mail/sent/create",{
         method:"POST",
         headers: {
@@ -496,31 +463,30 @@ export default {
    async srch(){
     console.log(this.searchby,this.search)
    
-     await fetch(`http://localhost:8080/    ?searchby=${this.searchby},search=${this.search}`,{
+     await fetch(`http://localhost:8080/mails/inbox/search?id=${this.email}&type=${this.searchby}&keyWord=${this.search}`,{
         method:"GET"
    }).then(res => res.json())
     .then(data =>this.emails=data);
     this.searchby=''
     this.search=''
-    
+    console.warn(this.emails)
     },
     async filter(){
     console.log(this.filterby,this.filterid)
-    await fetch(`http://localhost:8080/    ?filterby=${this.filterby}&filter=${this.filterid}`,{
+    await fetch(`http://localhost:8080/inbox/filter?id=${this.email}&criteria=${this.filterby}&keyWord=${this.filterid}`,{
         method:"GET"
    }).then(res => res.json())
     .then(data =>this.emails=data);
-    this.filter=''
+    this.filterid=''
     this.filterby=''
     },
     async sort(){
       console.log(this.sortby)
-    //  await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
-    //     method:"GET"
-    //  }).then(res => res.json())
-    // .then(data =>this.emails=data);
-    this.sortby=''
-      
+     await fetch(`http://localhost:8080/mails/inbox/sort?id=${this.email}&type=${this.sortby}`,{
+        method:"GET"
+     }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.sortby='' 
     },
    async trash(ind){
     this.ids[0] = ind

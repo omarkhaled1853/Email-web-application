@@ -36,13 +36,13 @@
               <div class="search">
                 <select v-model="searchby" id="searchtypeid" name="searchtype">
                   <option>Search by</option>
-                  <option>Date</option>
-                  <option>Sender</option>
-                  <option>Receviers</option>
-                  <option>Importancy</option>
-                  <option>Subject</option>
-                  <option>Body</option>
-                  <option>Attachments</option>
+                <option>Date</option>
+                <option>Sender</option>
+                <option>Recevier</option>
+                <option>Priority</option>
+                <option>Subject</option>
+                <option>Content</option>
+                <option>Attachment</option>
                 </select>
                 <button @click="srch()" >Search</button>
               </div>
@@ -51,24 +51,26 @@
               <div class="sort">
                 <select v-model="sortby" id="sortid" name="sort">
                   <option>Sort by</option>
-                  <option>Default</option>
-                  <option>Sender</option>
-                  <option>Receviers</option>
-                  <option>Importancy</option>
-                  <option>Subject</option>
-                  <option>Body</option>
-                  <option>Attachments</option>
+                <option>Date</option>
+                <option>Sender</option>
+                <option>Recevier</option>
+                <option>Priority</option>
+                <option>Subject</option>
+                <option>Content</option>
+                <option>Attachment</option>
                 </select>
                 <button @click="sort()">sort</button>
               </div>
             </div>
   
             <div class="filter">
+              <input v-model="filterid" style="margin-left:5px;" placeholder=" filterby...." for="searchtypeid">
               <div class="select">
                 <select v-model="filterby" id="filterid" name="filter">
                   <option>Filter by</option>
-                  <option>sender</option>
-                  <option>Subject</option>
+                <option>Sender-Subject</option>
+                <option>Subject-Priority</option>
+                <option>Sender-Priority</option>
                 </select>
                 <button @click="filter()">filter</button>
               </div>
@@ -193,7 +195,7 @@
               <td>priority</td>
               <td>Sender</td>
               <td>Date</td>
-              <td> Subject</td>
+              <td>Subject</td>
               <td>Content</td>
               <td>Attachments</td>
               <td>Move to trash <i class="fa-solid fa-trash" style="font-size:15px; color:red"></i></td>
@@ -201,12 +203,11 @@
             </tr>
             <tr v-for="item in emails" :key="item.email">
               <td> <input v-model="choosen" :value="item.id" type="checkbox"></td>
-              <td>{{item.receiver}}</td>
-              <td>{{item.subject}}</td>
-              <td>{{item.date}}</td>
-              <td>{{item.content}}</td>
               <td>{{item.priority}}</td>
-              <td>
+              <td>{{item.sender}}</td>
+              <td>{{item.date}}</td>
+              <td>{{item.subject}}</td>
+              <td>{{item.content}}</td><td>
                 <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
               </td>
               <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
@@ -229,6 +230,7 @@
     name: "TrAsh",
     data() {
       return {
+        filterid : "",
         user_name: "",
         email: "",
         dialog:false,
@@ -253,7 +255,7 @@
         attachments:[],
       },
         emails: [],
-        ids: []
+        ids: [],
       };
     },
     mounted() {
@@ -344,24 +346,34 @@
       location.reload()
       },
      
-     async srch(){
-       let res=  await fetch(`http://localhost:8080/    ?searchby=${this.searchby},search=${this.search}`,{
-          method:"GET"
-     })
-      this.emails=res.data
-      },
-      async filter(){
-        let res =await fetch(`http://localhost:8080/    ?filterby=${this.filterby}`,{
-          method:"GET"
-     })
-      this.emails=res.data
-      },
+      async srch(){
+    console.log(this.searchby,this.search)
+   
+     await fetch(`http://localhost:8080/mails/trash/search?id=${this.email}&type=${this.searchby}&keyWord=${this.search}`,{
+        method:"GET"
+   }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.searchby=''
+    this.search=''
+    console.warn(this.emails)
+    },
+    async filter(){
+    console.log(this.filterby,this.filterid)
+    await fetch(`http://localhost:8080/trash/filter?id=${this.email}&criteria=${this.filterby}&keyWord=${this.filterid}`,{
+        method:"GET"
+   }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.filterid=''
+    this.filterby=''
+    },
       async sort(){
-        await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
-          method:"GET"
-       })
-       
-      },
+      console.log(this.sortby)
+     await fetch(`http://localhost:8080/mails/trash/sort?id=${this.email}&type=${this.sortby}`,{
+        method:"GET"
+     }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.sortby='' 
+    },
      async trash(ind){
         this.ids[0] = ind
         await fetch(`http://localhost:8080/mail/delete?id=${this.email}&ids=${this.ids}`,{

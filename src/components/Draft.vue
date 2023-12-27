@@ -296,18 +296,19 @@
       },
       ///search
      async srch(){
-        await fetch(`http://localhost:8080/    ?searchby=${this.searchby}&search=${this.search}`,{
+        await fetch(`http://localhost:8080/mails/draft/search?id=${this.email}&type=${this.searchby}&keyWord=${this.search}`,{
           method:"GET"
      }).then(res=>res.json())
       .then(data=>this.emails=data);
       },
       async sort(){
-       await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
-          method:"GET"
-       }).then(res=>res.json())
-      .then(data=>this.emails=data);
-      },
-      
+      console.log(this.sortby)
+     await fetch(`http://localhost:8080/mails/draft/sort?id=${this.email}&type=${this.sortby}`,{
+        method:"GET"
+     }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.sortby='' 
+    },
       async trash(ind){
       this.ids[0] = ind
       console.log(ind)

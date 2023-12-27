@@ -271,18 +271,25 @@
   
       },
       ///search
-     async srch(){
-       let res=  await fetch(`http://localhost:8080/    ?searchby=${this.searchby},search=${this.search}`,{
-          method:"GET"
-     })
-      this.emails=res.data
-      },
-      async sort(){
-       let res= await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
-          method:"GET"
-       })
-        this.emails=res.data
-      },
+      async srch(){
+    console.log(this.searchby,this.search)
+   
+     await fetch(`http://localhost:8080/mails/sent/search?id=${this.email}&type=${this.searchby}&keyWord=${this.search}`,{
+        method:"GET"
+   }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.searchby=''
+    this.search=''
+    console.warn(this.emails)
+    },
+    async sort(){
+      console.log(this.sortby)
+     await fetch(`http://localhost:8080/mails/sent/sort?id=${this.email}&type=${this.sortby}`,{
+        method:"GET"
+     }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.sortby='' 
+    },
       //remove this contact 
       async trash(ind){
         this.ids[0] = ind
