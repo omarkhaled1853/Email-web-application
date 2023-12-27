@@ -2,6 +2,7 @@ package com.omarkhaled.simple.webbased.email.program.services;
 
 
 import com.omarkhaled.simple.webbased.email.program.classes.Attachment;
+import com.omarkhaled.simple.webbased.email.program.classes.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -11,10 +12,9 @@ import java.util.UUID;
 @Service
 public class AttachmentService {
 
-    private Map<String, Attachment> attachmentMap;
-
-    public Map<String, Attachment> getAttachmentMap() {
-        return attachmentMap;
+    //get attachment
+    public Collection<Attachment> getAttachment() {
+        return ;
     }
 
     public void setAttachmentMap(Map<String, Attachment> attachmentMap) {

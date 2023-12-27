@@ -3,6 +3,7 @@ package com.omarkhaled.simple.webbased.email.program.controllers;
 
 import com.omarkhaled.simple.webbased.email.program.classes.Attachment;
 import com.omarkhaled.simple.webbased.email.program.services.AttachmentService;
+import com.omarkhaled.simple.webbased.email.program.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +19,12 @@ import java.util.Collection;
 public class AttachmentController {
 
     private final AttachmentService attachmentService;
+    private final UsersService usersService;
 
     @Autowired
-    public AttachmentController(AttachmentService attachmentService) {
+    public AttachmentController(AttachmentService attachmentService, UsersService usersService) {
         this.attachmentService = attachmentService;
+        this.usersService = usersService;
     }
 
     //get attachments

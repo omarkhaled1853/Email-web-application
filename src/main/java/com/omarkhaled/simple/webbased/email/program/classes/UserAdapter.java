@@ -9,12 +9,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 
+
 public class UserAdapter implements Adapter<User> {
     private final ObjectMapper mapper = new ObjectMapper();
     private String path = "D:\\Mail Server\\";
-
-    public UserAdapter(ObjectMapper objectMapper) {
-    }
 
     @Override
     public void save(User user, String file) throws IOException {

@@ -2,10 +2,7 @@ package com.omarkhaled.simple.webbased.email.program.controllers;
 
 import com.omarkhaled.simple.webbased.email.program.classes.Mail;
 import com.omarkhaled.simple.webbased.email.program.classes.User;
-import com.omarkhaled.simple.webbased.email.program.services.InboxService;
-import com.omarkhaled.simple.webbased.email.program.services.SentService;
-import com.omarkhaled.simple.webbased.email.program.services.TrashService;
-import com.omarkhaled.simple.webbased.email.program.services.UsersService;
+import com.omarkhaled.simple.webbased.email.program.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +22,18 @@ public class SentController {
     private final InboxService inboxService;
     private final TrashService trashService;
 
+    private final SortingService sortingService;
+
+    private final SearchingService searchingService;
+
     @Autowired
-    public SentController(UsersService usersService, SentService sentService, InboxService inboxService, TrashService trashService) {
+    public SentController(UsersService usersService, SentService sentService, InboxService inboxService, TrashService trashService, SortingService sortingService, SearchingService searchingService) {
         this.usersService = usersService;
         this.sentService = sentService;
         this.inboxService = inboxService;
         this.trashService = trashService;
+        this.sortingService = sortingService;
+        this.searchingService = searchingService;
     }
 
     //get mails
@@ -48,6 +51,8 @@ public class SentController {
     @PostMapping ("/mail/sent/create")
     public ResponseEntity<Boolean> create(@RequestBody Mail mail){
 
+        if(mail.getReceiver().equals(mail.getSender())) throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
+
         User receiver = usersService.getUser(mail.getReceiver());
 
         if(receiver == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -59,6 +64,22 @@ public class SentController {
         inboxService.addMail(mail1, usersService.getUsersDB());
 
         return ResponseEntity.ok(true);
+    }
+
+    //sort mails
+    @GetMapping ("/mails/sent/sort")
+    public Collection<Mail> sortInbox(@RequestParam String id, @RequestParam String type){
+        Collection<Mail> mails = sentService.getMails(id, usersService.getUsersDB());
+        sortingService.setStrategy(type);
+        return sortingService.getMails(mails);
+    }
+
+    //search mails
+    @GetMapping ("mails/sent/search")
+    public Collection<Mail> searchInbox(@RequestParam String id, @RequestParam String type, @RequestParam String keyWord){
+        Collection<Mail> mails = sentService.getMails(id, usersService.getUsersDB());
+        searchingService.setStrategy(type);
+        return searchingService.getMails(keyWord, mails);
     }
 
     //trash mail

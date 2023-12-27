@@ -4,6 +4,7 @@ import com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public class Mail {
     private String id;
@@ -13,7 +14,7 @@ public class Mail {
     private String content;
     private String date;
     private int priority;
-    private List<Attachment> attachments;
+    private Map<String, Attachment> attachments;
 
     private long createOn;
     private long destroyOn;
@@ -60,7 +61,7 @@ public class Mail {
         return priority;
     }
 
-    public List<Attachment> getAttachments() {
+    public Map<String, Attachment> getAttachments() {
         return attachments;
     }
 
@@ -117,7 +118,7 @@ public class Mail {
         }
 
         @Override
-        public MailBuilder setAttachments(List<Attachment> attachments) {
+        public MailBuilder setAttachments(Map<String, Attachment> attachments) {
             mail.attachments = attachments;
             return this;
         }

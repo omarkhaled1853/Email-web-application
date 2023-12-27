@@ -52,6 +52,8 @@ public class ContactController {
 
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
+        if(user.getContacts().get(name).contains(email)) throw new ResponseStatusException(HttpStatus.CREATED);
+
         contactService.addEmail(id, email, name, usersService.getUsersDB());
     }
 

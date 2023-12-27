@@ -19,23 +19,16 @@ import java.util.Map;
 @CrossOrigin
 public class UserAuthenticationController {
     private final UsersService usersService;
+    private final Adapter<Map<String, User>> adapter;
 
-    @Autowired
-    public UserAuthenticationController(UsersService usersService) {
+    public UserAuthenticationController(UsersService usersService, UsersAdapter adapter) {
         this.usersService = usersService;
-    }
-
-    //load users
-    @GetMapping ("/users")
-    public void load () throws IOException {
-        Adapter<Map<String, User>> adapter = new UsersAdapter();
-        usersService.setUsersDB(adapter.load("users.json"));
+        this.adapter = adapter;
     }
 
     //add new user
     @PostMapping ("/signUp")
     public ResponseEntity<Boolean> create (@RequestBody User user) throws IOException {
-        Adapter<Map<String, User>> adapter = new UsersAdapter();
         User user1 = usersService.getUser(user.getEmail());
         //check for new user
         if(user1 != null) throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
