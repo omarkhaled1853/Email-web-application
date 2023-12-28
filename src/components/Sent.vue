@@ -322,7 +322,33 @@
           body:(this.newname,itm)
         })
   
-      }
+      },
+      async downloadAttachment(attachmentId, attachmentName,mailId){
+      console.log(this.email, attachmentId, attachmentName,mailId)
+      let extension = null;
+      await fetch(`http://localhost:8080/mail/attachments/inbox/download?id=${this.email}&mailId=${mailId}&attachmentId=${attachmentId}`,{
+        method : "GET"
+      }).then(response => {
+        // Infer the file extension from the Content-Type header if not present
+        const contentType = response.headers.get('Content-Type');
+        extension = contentType.split('/').pop() || 'ext';
+        return response.blob()
+      })
+      .then(blob => {
+          
+          const blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+
+          link.href = blobUrl;
+          link.download = "attachment_filename." + extension; // Set the desired filename
+
+          document.body.appendChild(link);
+          link.click();
+
+         document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl);
+        })
+    },
      }
   };
   </script>

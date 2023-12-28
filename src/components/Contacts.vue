@@ -37,13 +37,7 @@
                 <input v-model="search" style="margin-left:5px;" placeholder=" search...." for="searchtypeid">
                 <select v-model="searchby" id="searchtypeid" name="searchtype">
                   <option>Search by</option>
-                  <option>Date</option>
-                  <option>Sender</option>
-                  <option>Receviers</option>
-                  <option>Importancy</option>
-                  <option>Subject</option>
-                  <option>Body</option>
-                  <option>Attachments</option>
+                  <option>name</option>
                 </select>
                 <button @click="srch()" >Search</button>
               </div>

@@ -156,8 +156,8 @@
                   <td> {{item.subject}}</td>
                   <td>{{item.content}}</td>
                   <td>
-                    <v-btn v-for="attach in item.attachments" :key="attach.id" >{{attach.attachmentName}}</v-btn>
-                  </td>
+                    <v-btn v-for="attach in item.attachments" :key="attach.id"  @click="downloadAttachment(attach.id, attach.attachmentName, item.id)">{{ attach.attachmentName }}</v-btn></td>        
+                 
                   <td><i @click="trash(item.id)" class="fa-solid fa-x" style="font-size:25px; color:red;"></i></td>
                 </tr>
                </table>
@@ -326,7 +326,33 @@
                 // Toggle the visibility of each icon
                 icon.style.display = (icon.style.display === 'none' || icon.style.display === '') ? 'inline' : 'inline';
             });
-        }
+        },
+        async downloadAttachment(attachmentId, attachmentName,mailId){
+      console.log(this.email, attachmentId, attachmentName,mailId)
+      let extension = null;
+      await fetch(`http://localhost:8080/mail/attachments/inbox/download?id=${this.email}&mailId=${mailId}&attachmentId=${attachmentId}`,{
+        method : "GET"
+      }).then(response => {
+        // Infer the file extension from the Content-Type header if not present
+        const contentType = response.headers.get('Content-Type');
+        extension = contentType.split('/').pop() || 'ext';
+        return response.blob()
+      })
+      .then(blob => {
+          const blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+
+          link.href = blobUrl;
+          link.download = "attachment_filename." + extension; 
+
+          
+          document.body.appendChild(link);
+          link.click();
+
+          document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl);
+        })
+    },
      }
   };
   </script>
