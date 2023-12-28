@@ -258,7 +258,7 @@
             <td>{{ emails[index].subject }}</td>
             <td>{{ emails[index].content }}</td>
             <td>
-              <a v-for="attach in item.attachments" :key="attach.id"  @click="downloadAttachment(attach.id, attach.attachmentName, item.id)">{{ attach.attachmentName }}</a>  </td>
+              <v-btn v-for="attach in emails[index].attachments" :key="attach.id"  @click="downloadAttachment(attach.id, attach.attachmentName, emails[index].id)">{{ attach.attachmentName }}</v-btn></td>
             <td><i @click="trash(emails[index].id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
           </template>
           </tr>
@@ -315,7 +315,8 @@ export default {
       currentPage: 1,
       itemsPerPage: 3,
       choos:'',
-      multi:false
+      multi:false,
+      attach : []
     };
   },
   computed: {
@@ -552,6 +553,10 @@ export default {
     async uploadFile() {
         let formData = new FormData();
         let files = document.getElementById('fileupload').files;
+        if(files.length == 0){
+          this.massage.attachments = []
+          return
+        }
         for (let i = 0; i < files.length; i++) {
             formData.append("data", files[i]);
         }
@@ -562,12 +567,33 @@ export default {
         .then(data => this.massage.attachments = data);
     },
     async downloadAttachment(attachmentId, attachmentName,mailId){
-      let res = await fetch(`http://localhost:8080/mail/attachments/sent/download?id=${this.email}&mailId=${mailId}&attachmentId=${attachmentId}`,{
+      console.log(this.email, attachmentId, attachmentName,mailId)
+      let extension = null;
+      await fetch(`http://localhost:8080/mail/attachments/inbox/download?id=${this.email}&mailId=${mailId}&attachmentId=${attachmentId}`,{
         method : "GET"
-      });
-      if(res.ok){
-        console.alert(`${attachmentName} dowanloaded`)
-      }
+      }).then(response => {
+        // Infer the file extension from the Content-Type header if not present
+        const contentType = response.headers.get('Content-Type');
+        extension = contentType.split('/').pop() || 'ext';
+        return response.blob()
+      })
+      .then(blob => {
+          // Create a blob URL and create a link element
+          const blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+
+          // Set link attributes
+          link.href = blobUrl;
+          link.download = "attachment_filename." + extension; // Set the desired filename
+
+          // Append the link to the document and trigger the click event
+          document.body.appendChild(link);
+          link.click();
+
+          // Remove the link from the document and revoke the blob URL
+          document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl);
+        })
     },
     getEmailId(item) {
       return item ? item.id || '' : '';

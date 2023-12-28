@@ -156,7 +156,7 @@
                   <td> {{item.subject}}</td>
                   <td>{{item.content}}</td>
                   <td>
-                    <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
+                    <v-btn v-for="attach in item.attachments" :key="attach.id" >{{attach.attachmentName}}</v-btn>
                   </td>
                   <td><i @click="trash(item.id)" class="fa-solid fa-x" style="font-size:25px; color:red;"></i></td>
                 </tr>
@@ -196,24 +196,22 @@
         priority:'',
         attachments:[],
       },
-        folders_name:[
-          'work','social'
-        ],
+        folders_name:[],
         emails:[],
         ids: [],
         multi:false
       };
     },
     async mounted(){
-    //   this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
-    // this.email = JSON.parse(localStorage.getItem("person-inf")).email;
-    // console.warn(this.email)
-    // this.massage.sender = this.email
-    //   await fetch(`http://localhost:8080/folders?id=${this.email}`,{
-    //       method:"GET"
-    //   }).then(res=>res.json())
-    //   .then(data=>this.folders_name=data);
-    //   console.warn(this.folders_name)
+      this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+    this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+    console.warn(this.email)
+    this.massage.sender = this.email
+      await fetch(`http://localhost:8080/folders?id=${this.email}`,{
+          method:"GET"
+      }).then(res=>res.json())
+      .then(data=>this.folders_name=data);
+      console.warn(this.folders_name)
     },
     methods: {
       handleFileChange() {
@@ -273,15 +271,16 @@
       },
       //rename folder
      async save(){
-        await fetch("http://localhost:8080/  ",
+        await fetch(`http://localhost:8080/folders/rename?id=${this.email}&oldFolderName=${this.selector}&newFolderName=${this.newname}`,
         {
           method:"PUT",
-          body:(this.newname,this.selector)
         })
+        this.renamedialoge = false
+        location.reload();
       },
       //delete folder
      async delfolder(){
-      await fetch(`http://localhost:8080/     ?id=${this.email}&folderName=${this.selector}`,{
+      await fetch(`http://localhost:8080/folders/delete?id=${this.email}&folderName=${this.selector}`,{
           method:"DELETE"
        })
         location.reload();

@@ -209,7 +209,7 @@
               <td>{{item.date}}</td>
               <td>{{item.subject}}</td>
               <td>{{item.content}}</td><td>
-                <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
+                <v-btn v-for="attach in item.attachments" :key="attach.id" >{{attach.attachmentName}}</v-btn>
               </td>
               <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
             </tr>

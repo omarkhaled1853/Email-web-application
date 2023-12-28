@@ -150,7 +150,7 @@
               <td>{{item.content}}</td>
               <td>{{item.priority}}</td>
               <td>
-                <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
+                <v-btn v-for="attach in item.attachments" :key="attach.id" >{{attach.attachmentName}}</v-btn>
               </td>
               <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
             </tr>
@@ -218,27 +218,22 @@
       this.attachments = Array.from(this.$refs.fileupload.files);
       console.warn( this.attachments)
     },
-    async uploadFiles() {
-      try {
-        if (this.attachments.length === 0) {
-          alert("Please select at least one file before uploading.");
-          return;
-        }
+    async uploadFile() {
         let formData = new FormData();
-        this.attachments.forEach((file, index) => {
-          formData.append(`file_${index}`, file);
-        });
-        const response = await fetch('http://localhost:8080/photoz', {
-          method: "POST",
-          body: formData
-        });
-        const result = await response.text();
-        alert(result);
-      } catch (error) {
-        console.error('Error uploading files:', error);
-      }
-    
-  },
+        let files = document.getElementById('fileupload').files;
+        if(files.length == 0){
+          this.massage.attachments = []
+          return
+        }
+        for (let i = 0; i < files.length; i++) {
+            formData.append("data", files[i]);
+        }
+        await fetch('http://localhost:8080/mail/sent/attachments', {
+            method: "POST",
+            body: formData
+        }).then(res => res.json())
+        .then(data => this.massage.attachments = data);
+    },
       dia(itemmail){
         this.dialog=!this.dialog
         this.itemmail=itemmail
@@ -337,18 +332,7 @@
       location.reload();
     }
     },
-      ///change name (edit)
-     async save(itm){
-        console.warn("edit-mail"+JSON.stringify(itm))
-        console.warn("new name"+JSON.stringify(this.newname))
-        this.edit=false;
-        await fetch("http://localhost:8080/  ",
-        {
-          method:"PUT",
-          body:(this.newname,itm)
-        })
-  
-      }
+
      }
   };
   </script>

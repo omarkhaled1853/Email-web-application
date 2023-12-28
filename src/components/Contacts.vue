@@ -169,7 +169,6 @@
             </tr>
             <tr v-for="(emails, name) in contacts" :key="name">
               <td>
-                  <input v-model="choosen" :value="item.id" type="checkbox">
                   <i @click="editf(name)" style="font-size:25px; color:#3498db;" class="fa-solid fa-pen-to-square"></i>
                   <button style="margin-left:25px;"  @click="addmail(name)" ><i style="font-size:25px; " class="fa-solid fa-plus"></i></button>
               </td>
@@ -231,14 +230,14 @@
       };
     },
     async mounted() {
-      // this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
-      // this.email = JSON.parse(localStorage.getItem("person-inf")).email;
-      // console.warn(this.email)
-      // this.massage.sender = this.email
-      // fetch(`http://localhost:8080/contacts?id=${this.email}`, {
-      //     method: "GET",
-      // }).then(res=>res.json())
-      // .then(data=>this.contacts=data);
+      this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+      this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+      console.warn(this.email)
+      this.massage.sender = this.email
+      fetch(`http://localhost:8080/contacts?id=${this.email}`, {
+          method: "GET",
+      }).then(res=>res.json())
+      .then(data=>this.contacts=data);
     },
     
     methods: {
@@ -348,12 +347,11 @@
         console.warn("edit-mail"+JSON.stringify(itm))
         console.warn("new name"+JSON.stringify(this.newname))
         this.edit=false;
-        await fetch("http://localhost:8080/  ",
+        await fetch(`http://localhost:8080/contact/rename?id=${this.email}&oldContactName=${itm}&newContactName=${this.newname}`,
         {
           method:"PUT",
-          body:(this.newname,itm)
         })
-  
+        
       },
       async admail(){
         console.warn(this.additionmail,this.itemmail,this.nameedidt)
