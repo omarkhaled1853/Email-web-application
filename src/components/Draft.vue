@@ -72,8 +72,10 @@
               <v-card-text style="background-color:black">
                 <v-form>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
+                  <v-btn @click="multyres()" style="width:auto;rigth:0;margin-left:200px;margin-bottom:10px;background-color:darkgoldenrod;color:black">clock to multy recievers</v-btn>
                   <br>
-                  <input v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
+                  <input v-if="!multi" v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
+                  <input v-if="multi" v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user1@CSED.com-user2@CSED.com-user3@CSED.com" id="toid">
                   <span v-if="isToInvalid" style="color: red;">Invalid email format</span>
                   <br>
                   <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
@@ -84,15 +86,14 @@
                   <br>
                   <input v-model="massage.subject" style="width:600px" type="text" placeholder=" (0-30)characters">
                   <br>
-                  <label style="font-size:20px; font:bold; color:#3498db;background-color:black ">contentent</label>
+                  <label style="font-size:20px; font:bold; color:#3498db;background-color:black ">content</label>
                   <br>
                   <textarea v-model="massage.content" id="userInput" name="userInput" class="left-up-align" rows="2" style="width:600px;border-raduis:10px;"></textarea>
                 </v-form>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="#" >attachments:</label>
               </v-card-text>
-              <input ref="fileupload" type="file" name="fileupload" multiple @change="handleFileChange" />
-              <button style="width:auto" @click="uploadFiles">Upload</button>
-                            <v-card-actions style="background-color:black">
+              <input id="fileupload" type="file" name="fileupload" multiple />
+              <v-card-actions style="background-color:black">
                 
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">priority:</label>
                 <select id="menu" name="menu" v-model="massage.priority">
@@ -194,6 +195,7 @@
         emails: [],
         ids: [],
         choosen:[],
+        multi:false
       };
     },
     mounted() {
@@ -262,6 +264,9 @@
       close_edit(){
         this.edit=false;
       },
+      multyres(){
+      this.multi=true;
+    },
       editf(it){
         this.edit=true;
         this.itemmail=it;

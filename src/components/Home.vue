@@ -90,9 +90,10 @@
             <v-card-text style="background-color:black">
               <v-form>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
+                <v-btn @click="multyres()" style="width:auto;rigth:0;margin-left:200px;margin-bottom:10px;background-color:darkgoldenrod;color:black">clock to multy recievers</v-btn>
                 <br>
-                <v-btn @click="uploadFile">upload</v-btn>
-                <input v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
+                <input v-if="!multi" v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
+                <input v-if="multi" v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user1@CSED.com-user2@CSED.com-user3@CSED.com" id="toid">
                 <span v-if="isToInvalid" style="color: red;">Invalid email format</span>
                 <br>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
@@ -103,7 +104,7 @@
                 <br>
                 <input v-model="massage.subject" style="width:600px" type="text" placeholder=" (0-30)characters">
                 <br>
-                <label style="font-size:20px; font:bold; color:#3498db;background-color:black ">contentent</label>
+                <label style="font-size:20px; font:bold; color:#3498db;background-color:black ">content</label>
                 <br>
                 <textarea v-model="massage.content" id="userInput" name="userInput" class="left-up-align" rows="2" style="width:600px;border-raduis:10px;"></textarea>
               </v-form>
@@ -248,16 +249,18 @@
             <td>Move to trash <i class="fa-solid fa-trash" style="font-size:15px; color:red"></i></td>
            
           </tr>
-          <tr v-for="item in emails" :key="item.email">
-            <td> <input v-model="choosen" :value="item.id" type="checkbox">   <i @click="folddialog(item.id)" class="fa-solid fa-folder-plus"> </i> <i @click="contactdialog(item.id,item.sender)" class="fa-solid fa-user-plus"></i>   </td>
-            <td>{{item.priority}}</td>
-            <td>{{item.sender}}</td>
-            <td>{{item.date}}</td>
-            <td>{{item.subject}}</td>
-            <td>{{item.content}}</td><td>
-              <v-btn v-for="attach in item.attachments" :key="attach.id"  @click="downloadAttachment(attach.id, attach.attachmentName, item.id)">{{ attach.attachmentName }}</v-btn>
-            </td>
-            <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
+          <tr  v-for="index in getRangeStartToEnd(start, end)" :key="index">
+            <template v-if="emails[index]">
+            <td>  <input  @click="print(emails[index].id)" :value="emails[index].id" type="checkbox">   <i @click="folddialog(emails[index].id)" class="fa-solid fa-folder-plus"> </i> <i @click="contactdialog(emails[index].id,emails[index].sender)" class="fa-solid fa-user-plus"></i> </td>
+            <td>{{ emails[index].priority }}</td>
+            <td>{{ emails[index].sender }}</td>
+            <td>{{ emails[index].date }}</td>
+            <td>{{ emails[index].subject }}</td>
+            <td>{{ emails[index].content }}</td>
+            <td>
+              <a v-for="attach in item.attachments" :key="attach.id"  @click="downloadAttachment(attach.id, attach.attachmentName, item.id)">{{ attach.attachmentName }}</a>  </td>
+            <td><i @click="trash(emails[index].id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
+          </template>
           </tr>
          </table>
         </div>
@@ -310,9 +313,21 @@ export default {
       ids: [],
       multifolder: false,
       currentPage: 1,
-      totalPages: '',
-      attatch : ''
+      itemsPerPage: 3,
+      choos:'',
+      multi:false
     };
+  },
+  computed: {
+    start() {
+      return (this.currentPage - 1) * this.itemsPerPage;
+    },
+    end() {
+      return this.start + this.itemsPerPage - 1;
+    },
+    totalPages() {
+      return Math.ceil(this.emails.length / this.itemsPerPage);
+    },
   },
   async mounted() {
     this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
@@ -326,12 +341,17 @@ export default {
     this.totalPages = Math.ceil(this.emails.length / 5)
   },
   methods: {
+    print(ind){
+      console.log(ind)
+      this.choosen.push(ind)
+      console.log(this.choosen)
+    },
+    getRangeStartToEnd(start, end) {
+      return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+    },
     handlePageChange() {
+      this.start=this.currentPage
       console.log('Page changed to:', this.currentPage);
-      fetch(`http://localhost:8080/mail/inbox?id=${this.email}&page=${this.currentPage}`, {
-      method: "GET",
-    }).then(res => res.json())
-    .then(data =>this.emails=data);
     },
     dia(){
       this.dialog=!this.dialog
@@ -378,6 +398,9 @@ export default {
     },
     showCreateNew(){
       this. createNewVisible=!this.createNewVisible
+    },
+    multyres(){
+      this.multi=true;
     },
     clear(){
       this.massage.receiver=''
@@ -545,7 +568,10 @@ export default {
       if(res.ok){
         console.alert(`${attachmentName} dowanloaded`)
       }
-    }
+    },
+    getEmailId(item) {
+      return item ? item.id || '' : '';
+    },
    }
 };
 </script>
