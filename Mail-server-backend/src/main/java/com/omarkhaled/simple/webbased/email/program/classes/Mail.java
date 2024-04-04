@@ -1,9 +1,11 @@
 package com.omarkhaled.simple.webbased.email.program.classes;
 
 import com.omarkhaled.simple.webbased.email.program.interfaces.MailBuilder;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public class Mail {
     private String id;
@@ -14,7 +16,6 @@ public class Mail {
     private String date;
     private int priority;
     private List<Attachment> attachments;
-
     private long createOn;
     private long destroyOn;
 
@@ -24,11 +25,11 @@ public class Mail {
                 "id='" + id + '\'' +
                 ", sender='" + sender + '\'' +
                 ", receiver='" + receiver + '\'' +
-                ", content='" + content + '\'' +
                 ", subject='" + subject + '\'' +
-                ", date=" + date +
-                ", attachments=" + attachments +
+                ", content='" + content + '\'' +
+                ", date='" + date + '\'' +
                 ", priority=" + priority +
+                ", attachments=" + attachments +
                 ", createOn=" + createOn +
                 ", destroyOn=" + destroyOn +
                 '}';

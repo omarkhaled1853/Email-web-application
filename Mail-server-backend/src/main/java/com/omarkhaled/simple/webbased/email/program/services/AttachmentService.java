@@ -2,45 +2,45 @@ package com.omarkhaled.simple.webbased.email.program.services;
 
 
 import com.omarkhaled.simple.webbased.email.program.classes.Attachment;
+import com.omarkhaled.simple.webbased.email.program.classes.Mail;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class AttachmentService {
 
-    private Map<String, Attachment> attachmentMap;
-
-    public Map<String, Attachment> getAttachmentMap() {
-        return attachmentMap;
+    //build attachment
+    public Attachment buildAttachment(String fileName, String contentType, byte[] data){
+        return new Attachment
+                .Builder()
+                .setId(UUID.randomUUID().toString())
+                .setAttachmentName(fileName)
+                .setContentType(contentType)
+                .setData(data)
+                .build();
     }
 
-    public void setAttachmentMap(Map<String, Attachment> attachmentMap) {
-        this.attachmentMap = attachmentMap;
+    //get attachments
+    public List<Attachment> getAttachments(List<MultipartFile> files) throws IOException {
+        List<Attachment> attachments = new ArrayList<>();
+        for(MultipartFile file: files){
+            Attachment attachment = buildAttachment(file.getOriginalFilename(), file.getContentType(), file.getBytes());
+            attachments.add(attachment);
+        }
+        return attachments;
     }
 
-    public Collection<Attachment> getAttachments() {
-        return attachmentMap.values();
-    }
-
-    public Attachment getAttachment(String id){
-        return attachmentMap.get(id);
-    }
-
-    public Attachment removeAttachment(String id){
-        return attachmentMap.remove(id);
-    }
-
-    public Attachment uploadAttachment(String fileName, String contentType, byte[] data){
-        Attachment attachment = new Attachment();
-        attachment.setId(UUID.randomUUID().toString());
-        attachment.setAttachmentName(fileName);
-        attachment.setData(data);
-        attachment.setContentType(contentType);
-        attachmentMap.put(attachment.getId(), attachment);
-        return attachment;
+    //get attachment
+    public Attachment getAttachment(Mail mail, String attachmentId){
+        List<Attachment> attachments = mail.getAttachments();
+        for (Attachment attachment: attachments){
+            if(attachment.getId().equals(attachmentId))
+                return attachment;
+        }
+        return null;
     }
 
 }

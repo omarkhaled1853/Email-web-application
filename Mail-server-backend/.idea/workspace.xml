@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a9fa89e7-3995-40bf-9c0f-57a6cf07b836" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Mail Server/users.json" beforeDir="false" afterPath="$PROJECT_DIR$/Mail Server/users.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/classes/AttachmentSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/classes/AttachmentSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/classes/Mail.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/classes/Mail.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/services/AttachmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/services/AttachmentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/services/DraftService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/services/DraftService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/services/SentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/services/SentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/AttachmentTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/AttachmentTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/BuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/BuilderTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/MailTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/MailTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/UserAdapterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/UserAdapterTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/UserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/UserTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
+  <component name="ProjectId" id="2a8j5dS3xUeu8ZIr5b3Q9rGusyj" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "D:/CSED/year 2/term 3/programing 2/Labs/L4/simple web-based email program/simple-web-based-email-program"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a9fa89e7-3995-40bf-9c0f-57a6cf07b836" name="Changes" comment="" />
+      <created>1703706921613</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1703706921613</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

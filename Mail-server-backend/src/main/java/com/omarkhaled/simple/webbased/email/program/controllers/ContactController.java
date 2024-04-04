@@ -52,7 +52,16 @@ public class ContactController {
 
         if(user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
+        if(user.getContacts().get(name).contains(email)) throw new ResponseStatusException(HttpStatus.CREATED);
+
         contactService.addEmail(id, email, name, usersService.getUsersDB());
+    }
+
+    @PutMapping ("/contact/rename")
+    public void contactRename(@RequestParam String id, @RequestParam String oldContactName, @RequestParam String newContactName){
+        Map<String, List<String>> contacts = contactService.getContacts(id, usersService.getUsersDB());
+        if (contacts.containsKey(newContactName)) throw new ResponseStatusException(HttpStatus.CREATED);
+        contactService.renameContact(id, oldContactName, newContactName, usersService.getUsersDB());
     }
 
     //delete contact

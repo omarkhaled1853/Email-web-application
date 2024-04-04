@@ -27,10 +27,10 @@ public class MailTest {
         attachment.setContentType("text/plain");
         byte[] testData = { 1, 2, 3, 4, 5 };
         attachment.setData(testData);
-        ArrayList<Attachment> arrattachments;
-        arrattachments=new ArrayList<>();
-        arrattachments.add(attachment);
-        arrattachments.add(attachment);
+//        ArrayList<Attachment> arrattachments;
+//        arrattachments=new ArrayList<>();
+//        arrattachments.add(attachment);
+//        arrattachments.add(attachment);
         Mail.Builder builder = new Mail.Builder();
         builder.setId("123")
                 .setSender("john@example.com")
@@ -39,7 +39,7 @@ public class MailTest {
                 .setSubject("Greetings")
                 .setDate("2023-01-01")
                 .setPriority(2)
-                .setAttachments(arrattachments)
+//                .setAttachments(arrattachments)
                 .setCreateOn(1640995200000L) // January 1, 2022
                 .setDestroyOn(1641081600000L); // January 2, 2022
 

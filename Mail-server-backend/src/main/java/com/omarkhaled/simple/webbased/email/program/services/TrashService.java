@@ -22,6 +22,16 @@ public class TrashService {
             usersDB.get(id).getTrash().put(mail.getId(), mail);
     }
 
+    //destroy mails
+    public List<String> destroyMails(Collection<Mail> trashDB){
+        List<String> ids = new ArrayList<>();
+        for (Mail mail: trashDB){
+            if(System.currentTimeMillis() >= mail.getDestroyOn())
+                ids.add(mail.getId());
+        }
+        return ids;
+    }
+
     //delete mail
     public List<Mail> deleteMails(String id, List<String> ids, Map<String, User> usersDB){
         List<Mail> mails = new ArrayList<>();
@@ -29,5 +39,10 @@ public class TrashService {
             mails.add(usersDB.get(id).getTrash().remove(maiId));
         }
         return mails;
+    }
+
+    //get mail
+    public Mail getMail(String id, String mailId, Map<String, User> usersDB) {
+        return usersDB.get(id).getTrash().get(mailId);
     }
 }

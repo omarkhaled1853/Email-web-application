@@ -32,6 +32,12 @@ public class ContactService {
         usersDB.get(id).getContacts().get(name).add(email);
     }
 
+    //rename contact
+    public void renameContact(String id, String oldContactName, String newContactName, Map<String, User> usersDB){
+        List<String> mails = usersDB.get(id).getContacts().remove(oldContactName);
+        usersDB.get(id).getContacts().put(newContactName, mails);
+    }
+
     //delete contact
     public List<List<String>> deleteMails(String id, List<String> ids, Map<String, User> usersDB){
         List<List<String>> emails = new ArrayList<>();

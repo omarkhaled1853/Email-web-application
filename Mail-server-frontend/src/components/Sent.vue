@@ -24,8 +24,9 @@
     <div class="content">
       <div class="header">
         <h1 style="color: aliceblue; padding-top: 10px">O3M-Mail</h1>
-        <button style="width:auto; font-size:large;  background-color:darkgrey;  height:40px;margin:auto; margin-left:30px ;" @click="reload()">reload</button>
-        <button style="width:auto; background-color:darkgrey; border-radius: 10px; font-size:large; height:50px;margin:auto;margin-left:800px ;" @click="setting()">Setting <i  style="font-size:40px" class="fa-solid fa-gear"></i></button>
+        <button style="width:auto; font-size:large;  background-color:darkgrey;  height:40px;margin:auto; margin-left:2% ;" @click="reload()">reload</button>
+        <h1 class="box-title">Sent</h1>
+        <button style="width:auto; background-color:darkgrey; border-radius: 10px; font-size:large; height:50px;margin:auto;margin-left:30% ;" @click="setting()">Setting <i  style="font-size:40px" class="fa-solid fa-gear"></i></button>
       </div>
       <div class="b2">
         <div class="container">
@@ -62,48 +63,51 @@
                 <button @click="sort()">sort</button>
               </div>
             </div>
-
-          </div>
-          <v-dialog v-model="dialog" width="800" heigth="850"  dark hide-overlay persistent>
-            <v-card>
-              <v-card-title style="color:white; background-color:#3498db; padding:auto; text-align:center; font-size:35px">new massage</v-card-title>
-              <v-card-text style="background-color:black">
-                <v-form>
-                  <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
-                  <br>
-                  <input v-model="massage.receiver" style="width:600px" type="text" placeholder=" user@example.com" :value="this.itemmail"  id="toid" disabled>
-                  <br>
-                  <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
-                  <br>
-                  <input v-model="massage.sender" style="width:600px" type="text" placeholder=" useremail" :value="email"  disabled>
-                  <br>
-                  <label style="font-size:20px; font:bold; color:#3498db;background-color:black">Subject:</label>
-                  <br>
-                  <input v-model="massage.subject" style="width:600px" type="text" placeholder=" (0-30)characters">
-                  <br>
-                  <label style="font-size:20px; font:bold; color:#3498db;background-color:black ">contentent</label>
-                  <br>
-                  <textarea v-model="massage.content" id="userInput" name="userInput" class="left-up-align" rows="2" style="width:600px;border-raduis:10px;"></textarea>
-                </v-form>
-                <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="#" >attachments:</label>
-              </v-card-text>
-              <input style="padding-left:30px"  type="file"  multiple @change="handleFileChange">
-              <v-card-actions style="background-color:black">
-                
-                <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">priority:</label>
-                <select id="menu" name="menu" v-model="massage.priority">
-                  <option value="1">1 (High)</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5 (Low)</option>
-                </select>
-                <v-btn style="width:auto; margin-left:20px" @click="draft()">Save as a draft</v-btn>
-                <v-btn style="width:auto; margin-left:200px" @click="send()">Send</v-btn>
-                <v-btn style="width:auto; margin-left:60px" @click="dia()">close</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+            <button class="new" @click="delet()">Delete the selected <i class="fa-solid fa-trash" style="font-size:25px; color:red"></i></button>
+            <button class="new" @click="dia()">new massage</button>          </div>
+            <v-dialog v-model="dialog" width="800" heigth="850"  dark hide-overlay persistent>
+              <v-card>
+                <v-card-title style="color:white; background-color:#3498db; padding:auto; text-align:center; font-size:35px">new massage</v-card-title>
+                <v-card-text style="background-color:black">
+                  <v-form>
+                    <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
+                    <v-btn @click="multyres()" style="width:auto;rigth:0;margin-left:200px;margin-bottom:10px;background-color:darkgoldenrod;color:black">clock to multy recievers</v-btn>
+                    <br>
+                    <input v-if="!multi" v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
+                    <input v-if="multi" v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user1@CSED.com-user2@CSED.com-user3@CSED.com" id="toid">
+                    <span v-if="isToInvalid" style="color: red;">Invalid email format</span>
+                    <br>
+                    <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
+                    <br>
+                    <input style="width:600px" type="text" placeholder=" useremail" :value="this.email"  disabled>
+                    <br>
+                    <label style="font-size:20px; font:bold; color:#3498db;background-color:black">subject:</label>
+                    <br>
+                    <input v-model="massage.subject" style="width:600px" type="text" placeholder=" (0-30)characters">
+                    <br>
+                    <label style="font-size:20px; font:bold; color:#3498db;background-color:black ">content</label>
+                    <br>
+                    <textarea v-model="massage.content" id="userInput" name="userInput" class="left-up-align" rows="2" style="width:600px;border-raduis:10px;"></textarea>
+                  </v-form>
+                  <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="#" >attachments:</label>
+                </v-card-text>
+                <input id="fileupload" type="file" name="fileupload" multiple />
+                <v-card-actions style="background-color:black">
+                  
+                  <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">priority:</label>
+                  <select id="menu" name="menu" v-model="massage.priority">
+                    <option value="1">1 (High)</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 (Low)</option>
+                  </select>
+                  <v-btn style="width:auto; margin-left:20px" @click="draft()">Save as a draft</v-btn>
+                  <v-btn style="width:auto; margin-left:200px" @click="send()">Send</v-btn>
+                  <v-btn style="width:auto; margin-left:60px" @click="dia()">close</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           <!-- ///////////////////////////////////////////////////////////// -->
          <v-dialog v-model="sittingdialog" width="600" heigth="600"  dark hide-overlay persistent>
             <v-card>
@@ -129,6 +133,7 @@
           <div class="info">
            <table border="2px">
             <tr>
+              <td> </td>
               <td>to</td>
               <td>subject</td>
               <td>content</td>
@@ -138,12 +143,13 @@
              
             </tr>
             <tr v-for="item in emails" :key="item.id">
+              <td><input v-model="choosen" :value="item.id" type="checkbox"></td>
               <td>{{item.receiver}}</td>
               <td>{{item.subject}}</td>
               <td>{{item.content}}</td>
               <td>{{item.priority}}</td>
               <td>
-                <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
+              <v-btn v-for="attach in item.attachments" :key="attach.id" :href='attach' @click="downloadAttachment(attach.id)">{{ attach.attachmentName }}</v-btn>
               </td>
               <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
             </tr>
@@ -177,6 +183,8 @@
         newfoldername:'',
         newname:'',
         sittingdialog:false,
+        choosen:[],
+        ids:[],
         massage:{
         sender:'',
         receiver:'',
@@ -186,6 +194,7 @@
         attachments:[],
       },
         emails: [],
+        multi:false
       };
     },
     mounted() {
@@ -193,6 +202,7 @@
       //   this.$router.push('/');
       this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
       this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+      console.warn(this.email)
       this.massage.sender = this.email
       fetch(`http://localhost:8080/mails/sent?id=${this.email}`, {
         method: "GET",
@@ -200,6 +210,31 @@
       .then(data=>this.emails=data);
     },
     methods: {
+      handleFileChange() {
+      this.attachments = Array.from(this.$refs.fileupload.files);
+      console.warn( this.attachments)
+    },
+    async uploadFiles() {
+      try {
+        if (this.attachments.length === 0) {
+          alert("Please select at least one file before uploading.");
+          return;
+        }
+        let formData = new FormData();
+        this.attachments.forEach((file, index) => {
+          formData.append(`file_${index}`, file);
+        });
+        const response = await fetch('http://localhost:8080/photoz', {
+          method: "POST",
+          body: formData
+        });
+        const result = await response.text();
+        alert(result);
+      } catch (error) {
+        console.error('Error uploading files:', error);
+      }
+    
+  },
       dia(itemmail){
         this.dialog=!this.dialog
         this.itemmail=itemmail
@@ -214,6 +249,9 @@
         JSON.stringify(localStorage.getItem("user-info")).status=this.status 
         this.sittingdialog=false     
       },
+      multyres(){
+      this.multi=true;
+    },
       logout(){
         localStorage.clear();
         this.$router.push('/')
@@ -239,31 +277,39 @@
   
       },
       ///search
-     async srch(){
-       let res=  await fetch(`http://localhost:8080/    ?searchby=${this.searchby},search=${this.search}`,{
-          method:"GET"
-     })
-      this.emails=res.data
-      },
-      async sort(){
-       let res= await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
-          method:"GET"
-       })
-        this.emails=res.data
-      },
+      async srch(){
+    console.log(this.searchby,this.search)
+   
+     await fetch(`http://localhost:8080/mails/sent/search?id=${this.email}&type=${this.searchby}&keyWord=${this.search}`,{
+        method:"GET"
+   }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.searchby=''
+    this.search=''
+    console.warn(this.emails)
+    },
+    async sort(){
+      console.log(this.sortby)
+     await fetch(`http://localhost:8080/mails/sent/sort?id=${this.email}&type=${this.sortby}`,{
+        method:"GET"
+     }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.sortby='' 
+    },
       //remove this contact 
-     async trash(ind){
-        console.warn(JSON.stringify("delete "+ind));
-        fetch("http://localhost:8080/trash",{
-          method:"POST",
-          body:JSON.stringify(ind)
-        });
-        await fetch(`http://localhost:8080/ ?index=${ind}`,{
+      async trash(ind){
+        this.ids[0] = ind
+        console.warn(this.email, this.selector, this.ids[0])
+        await fetch(`http://localhost:8080/folders/mail/delete?id=${this.email}&folderName=${this.selector}&ids=${this.ids}`,{
           method:"DELETE"
-       }).then(res=>res.json())
-     .then(data=>this.emails=data);
-     
-  
+       })
+        location.reload();
+      },
+      async delet() {
+        await fetch(`http://localhost:8080/folders/mail/delete?id=${this.email}&folderName=${this.selector}&ids=${this.choosen}`,{
+          method:"DELETE"
+       })
+        location.reload();
       },
       ///change name (edit)
      async save(itm){
@@ -289,15 +335,28 @@
     padding: 10px; 
     
   }
+  .box-title {
+    color: aliceblue;
+    margin-left:8%;
+    text-align: center;
+    padding-top: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-size: 36px; /* You can adjust the font size as needed */
+    transition: color 0.3s ease; /* Smooth transition for color change */
+  }
+  .box-title:hover {
+    color:  #3498db; /* Change the color on hover */
+  }
   .new {
     width:auto;
-    height: 25px;
-    margin-top: 5px;
-    margin-left: 15px;
+    height: 60px;
+    margin-top: 15px;
+    right: 0;
+    margin-left: 5%;
     background-color:#3498db; /* Green background color */
     color: white; /* White text color */
     text-align: center; /* Center text */
-    font-size: 15px; /* Set font size */
+    font-size: 16px; /* Set font size */
     cursor: pointer; /* Add a pointer cursor on hover */
     transition: transform 0.3s ease-in-out; /* Add transition for scaling effect */
   }

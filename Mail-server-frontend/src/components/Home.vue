@@ -6,6 +6,7 @@
     </label>
     <nav id="sidebar">
       <div class="title">Menu</div>
+
       <ul class="list-items">
         <router-link to=""></router-link>
         <li><router-link to="/Home">Inbox</router-link></li>
@@ -23,9 +24,12 @@
   </div>
   <div class="content">
     <div class="header">
+
       <h1 style="color: aliceblue; padding-top: 10px">O3M-Mail</h1>
-      <button style="width:auto; font-size:large;  background-color:darkgrey;  height:40px;margin:auto; margin-left:30px ;" @click="reload()">reload</button>
-      <button style="width:auto; background-color:darkgrey; border-radius: 10px; font-size:large; height:50px;margin:auto;margin-left:800px ;" @click="setting()">Setting <i  style="font-size:40px" class="fa-solid fa-gear"></i></button>
+      <button style="width:auto; font-size:large;  background-color:darkgrey;  height:40px;margin:auto; margin-left:2% ;" @click="reload()">reload</button>
+      <h1 class="box-title">INBOX</h1>
+      <button style="width:auto; background-color:darkgrey; border-radius: 10px; font-size:large; height:50px;margin:auto;margin-left:30% ;" @click="setting()">Setting <i  style="font-size:40px" class="fa-solid fa-gear"></i></button>
+      
     </div>
     <div class="b2">
       <div class="container">
@@ -37,42 +41,47 @@
                 <option>Search by</option>
                 <option>Date</option>
                 <option>Sender</option>
-                <option>Receviers</option>
-                <option>Importancy</option>
-                <option>subject</option>
-                <option>Body</option>
+                <option>Recevier</option>
+                <option>Priority</option>
+                <option>Subject</option>
+                <option>Content</option>
                 <option>Attachments</option>
               </select>
               <button @click="srch()" >Search</button>
             </div>
           </div>
           <div class="filter">
-            <div class="sort">
-              <select v-model="sortby" id="sortid" name="sort">
-                <option>Sort by</option>
-                <option>Default</option>
-                <option>Sender</option>
-                <option>Receviers</option>
-                <option>Importancy</option>
-                <option>subject</option>
-                <option>Body</option>
-                <option>Attachments</option>
-              </select>
-              <button @click="sort()">sort</button>
-            </div>
-          </div>
+            <input v-model="filterid" style="margin-left:5px;" placeholder=" filterby...." for="searchtypeid">
 
-          <div class="filter">
             <div class="select">
               <select v-model="filterby" id="filterid" name="filter">
                 <option>Filter by</option>
-                <option>sender</option>
-                <option>subject</option>
+                <option>Sender-Subject</option>
+                <option>Subject-Priority</option>
+                <option>Sender-Priority</option>
               </select>
               <button @click="filter()">filter</button>
             </div>
           </div>
+          <div class="filter">
+            <div class="sort">
+              <select v-model="sortby" id="sortid" name="sort">
+                <option>Sort by</option>
+                <option>Date</option>
+                <option>Sender</option>
+                <option>Recevier</option>
+                <option>Priority</option>
+                <option>Subject</option>
+                <option>Content</option>
+                <option>Attachment</option>
+              </select>
+              <button style="margin-left:15px" @click="sort()">sort</button>
+            </div>
+          </div>
+
+          
           <button class="new" @click="delet()">Delete the selected <i class="fa-solid fa-trash" style="font-size:25px; color:red"></i></button>
+          <button class="new" @click="folder_selected()">Folder selected <i class="fa-solid fa-up-down-left-right"></i></button>
           <button class="new" @click="dia()">new massage</button>
         </div>
         <v-dialog v-model="dialog" width="800" heigth="850"  dark hide-overlay persistent>
@@ -81,8 +90,10 @@
             <v-card-text style="background-color:black">
               <v-form>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">To:</label>
+                <v-btn @click="multyres()" style="width:auto;rigth:0;margin-left:200px;margin-bottom:10px;background-color:darkgoldenrod;color:black">clock to multy recievers</v-btn>
                 <br>
-                <input v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
+                <input v-if="!multi" v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user@CSED.com" id="toid">
+                <input v-if="multi" v-model="massage.receiver" @input="checkEmailValidity" style="width: 600px" type="email" placeholder="user1@CSED.com-user2@CSED.com-user3@CSED.com" id="toid">
                 <span v-if="isToInvalid" style="color: red;">Invalid email format</span>
                 <br>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">From:</label>
@@ -93,13 +104,13 @@
                 <br>
                 <input v-model="massage.subject" style="width:600px" type="text" placeholder=" (0-30)characters">
                 <br>
-                <label style="font-size:20px; font:bold; color:#3498db;background-color:black ">contentent</label>
+                <label style="font-size:20px; font:bold; color:#3498db;background-color:black ">content</label>
                 <br>
                 <textarea v-model="massage.content" id="userInput" name="userInput" class="left-up-align" rows="2" style="width:600px;border-raduis:10px;"></textarea>
               </v-form>
               <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="#" >attachments:</label>
             </v-card-text>
-            <input style="padding-left:30px"  type="file"  multiple @change="handleFileChange">
+            <input id="fileupload" type="file" name="fileupload" multiple />
             <v-card-actions style="background-color:black">
               
               <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">priority:</label>
@@ -122,24 +133,54 @@
             <v-card-title style="color:white; background-color:#3498db; padding:auto; text-align:center; font-size:35px">Folders<i style="font-size:50px; margin-left:5px;" class="fa-solid fa-folder-plus"> </i></v-card-title>
             <v-card-text style="background-color:black">
               <v-form>
-                <label style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">select sender folders:</label>
-                <select id="menu" name="menu" v-model="foldername">
-                  <option value="Social">Social</option>
-                  <option value="Work">Work</option>
-                  <option value="Family">Family</option>
+                <label v-if="!createNewVisible" style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">select sender folders:</label>
+                <select v-if="!createNewVisible" v-model="foldername"  id="searchtypeid" name="searchtype">
+                  <option v-for="folder in folders_name" :key="folder" :option=folder_name >{{ folder }}</option>
                 </select>
-                <v-btn style="width:auto; margin-left:20px" @click="addtofolder()">Add To Folder</v-btn>
-                <label style="font-size:20px; font:bold; color:#3498db;background-color:black">creat new:</label>
-                <br>
-                <input v-model="newfoldername" style="width:400px" type="text"  placeholder="new folder name">
-                <v-btn style="width:auto;margin-top:15px; margin-left:10px" @click="createnew()">create and add to folder</v-btn>
+                <v-btn v-if="!createNewVisible" style="width:auto; margin-left:20px" @click="addtofolder()">Add To Folder</v-btn>
+
+                <label v-if="createNewVisible" style="font-size:20px; font:bold; color:#3498db;background-color:black">creat new:</label>
+                <br v-if="createNewVisible">
+                <input v-if="createNewVisible" v-model="newfoldername" style="width:400px" type="text"  placeholder="new folder name">
+                <v-btn v-if="createNewVisible" style="width:auto;margin-top:15px; margin-left:10px" @click="createnew()">create and add to folder</v-btn>
                 </v-form>
             </v-card-text>
-
+            
             <v-card-actions style="background-color:black">
-             
+              
               <v-btn style="width:auto; margin-left:500px" @click="closefolder()">close</v-btn>
             </v-card-actions>
+            <v-card-actions style="background-color:black">
+              
+              <v-btn style="width:90%; margin:auto; " @click="showCreateNew()">Create other folder</v-btn></v-card-actions>
+          </v-card>
+        </v-dialog>
+        <!-- // ///////////////////////////////////////////////////////-->
+        <v-dialog v-model="multifolder" width="600" heigth="600"  dark hide-overlay persistent>
+          <v-card>
+            <v-card-title style="color:white; background-color:#3498db; padding:auto; text-align:center; font-size:35px">Folders<i style="font-size:50px; margin-left:5px;" class="fa-solid fa-folder-plus"> </i></v-card-title>
+            <v-card-text style="background-color:black">
+              <v-form>
+                <label v-if="!createNewVisible" style="font-size:20px; font:bold; color:#3498db;background-color:black" for="menu">select sender folders:</label>
+                <select v-if="!createNewVisible" v-model="foldername"  id="searchtypeid" name="searchtype">
+                  <option v-for="folder in folders_name" :key="folder" :option=folder_name >{{ folder }}</option>
+                </select>
+                <v-btn v-if="!createNewVisible" style="width:auto; margin-left:20px" @click="folderselected()">Add To Folder</v-btn>
+
+                <label v-if="createNewVisible" style="font-size:20px; font:bold; color:#3498db;background-color:black">creat new:</label>
+                <br v-if="createNewVisible">
+                <input v-if="createNewVisible" v-model="newfoldername" style="width:400px" type="text"  placeholder="new folder name">
+                <v-btn v-if="createNewVisible" style="width:auto;margin-top:15px; margin-left:10px" @click="folderselected()">create and add to folder</v-btn>
+                </v-form>
+            </v-card-text>
+            
+            <v-card-actions style="background-color:black">
+              
+              <v-btn style="width:auto; margin-left:500px" @click="closemultifolder()">close</v-btn>
+            </v-card-actions>
+            <v-card-actions style="background-color:black">
+              
+              <v-btn style="width:90%; margin:auto; " @click="showCreateNew()">Create other folder</v-btn></v-card-actions>
           </v-card>
         </v-dialog>
         <!-- // ///////////////////////////////////////////////////////-->
@@ -152,7 +193,7 @@
                 <input v-model="newname" type="text">
                 <br>
                 <label style="font-size:20px; font:bold; color:#3498db;background-color:black">email:</label>
-                <input :value="this.emails[this.itemid].sender" style="width:400px" type="text"   disabled>
+                <input :value="this.itemsender" style="width:400px" type="text"   disabled>
                 <v-btn style="width:auto;margin-top:15px; margin-left:10px" @click="addtocontacte()">add to contacts</v-btn>
                 </v-form>
             </v-card-text>
@@ -183,8 +224,19 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-      
+
         <div class="info">
+          <label for="pageSlider" class="slider-label">Page:</label>
+          <input
+            id="pageSlider"
+            type="range"
+            :min="1"
+            :max="totalPages"
+            v-model="currentPage"
+            @input="handlePageChange"
+            class="page-slider"
+          />
+          <span class="current-page">{{ currentPage }}</span>
          <table border="2px">
           <tr>
             <td>       </td>
@@ -197,16 +249,18 @@
             <td>Move to trash <i class="fa-solid fa-trash" style="font-size:15px; color:red"></i></td>
            
           </tr>
-          <tr v-for="item in emails" :key="item.email">
-            <td> <input v-model="choosen" :value="item.index" type="checkbox">   <i @click="folddialog(item.id)" class="fa-solid fa-folder-plus"> </i> <i @click="contactdialog(item.id)" class="fa-solid fa-user-plus"></i>   </td>
-            <td>{{item.priority}}</td>
-            <td>{{item.sender}}</td>
-            <td>{{item.date}}</td>
-            <td>{{item.subject}}</td>
-            <td>{{item.content}}</td><td>
-              <a v-for="attach in item.attachments" :key="attach.id" :href='attach'>{{ attach }}</a>
-            </td>
-            <td><i @click="trash(item.id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
+          <tr  v-for="index in getRangeStartToEnd(start, end)" :key="index">
+            <template v-if="emails[index]">
+            <td>  <input  @click="print(emails[index].id)" :value="emails[index].id" type="checkbox">   <i @click="folddialog(emails[index].id)" class="fa-solid fa-folder-plus"> </i> <i @click="contactdialog(emails[index].id,emails[index].sender)" class="fa-solid fa-user-plus"></i> </td>
+            <td>{{ emails[index].priority }}</td>
+            <td>{{ emails[index].sender }}</td>
+            <td>{{ emails[index].date }}</td>
+            <td>{{ emails[index].subject }}</td>
+            <td>{{ emails[index].content }}</td>
+            <td>
+              <v-btn v-for="attach in emails[index].attachments" :key="attach.id"  @click="downloadAttachment(attach.id, attach.attachmentName, emails[index].id)">{{ attach.attachmentName }}</v-btn></td>
+            <td><i @click="trash(emails[index].id)" class="fa-solid fa-trash" style="font-size:25px; color:red;"></i></td>
+          </template>
           </tr>
          </table>
         </div>
@@ -221,9 +275,10 @@
 </template>
 
 <script >
-// import "@fortawesome/fontawesome-free/css/all.css"; // Import the styles
+
 export default {
   name: "HoMe",
+  
   data() {
     return {
       user_name:'' ,
@@ -233,6 +288,7 @@ export default {
       searchby:'',
       sortby:'',
       filterby:'',
+      filterid:'',
       choosen:[],
       folder:false,
       foldername:'',
@@ -240,7 +296,10 @@ export default {
       newfoldername:'',
       contacts:false,
       newname:'',
+      createNewVisible: false,
       sittingdialog:false,
+      itemsender:'',
+      nameuse:'',
       massage:{
         sender: '',
         receiver:'',
@@ -249,41 +308,100 @@ export default {
         priority:'',
         attachments:[],
       },
+      folders_name:[],
       emails: [],
+      ids: [],
+      multifolder: false,
+      currentPage: 1,
+      itemsPerPage: 3,
+      choos:'',
+      multi:false,
+      attach : []
     };
   },
-  mounted() {
-    // if(JSON.parse(localStorage.getItem("person-inf")).userName==null)
-    //     this.$router.push('/');
+  computed: {
+    start() {
+      return (this.currentPage - 1) * this.itemsPerPage;
+    },
+    end() {
+      return this.start + this.itemsPerPage - 1;
+    },
+    totalPages() {
+      return Math.ceil(this.emails.length / this.itemsPerPage);
+    },
+  },
+  async mounted() {
     this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
     this.email = JSON.parse(localStorage.getItem("person-inf")).email;
     console.warn(this.email)
     this.massage.sender = this.email
-    fetch(`http://localhost:8080/mail/inbox?id=${this.email}`, {
+    await fetch(`http://localhost:8080/mail/inbox?id=${this.email}`, {
       method: "GET",
     }).then(res => res.json())
     .then(data =>this.emails=data);
+    this.totalPages = Math.ceil(this.emails.length / 5)
   },
   methods: {
+    print(ind){
+      console.log(ind)
+      this.choosen.push(ind)
+      console.log(this.choosen)
+    },
+    getRangeStartToEnd(start, end) {
+      return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+    },
+    handlePageChange() {
+      this.start=this.currentPage
+      console.log('Page changed to:', this.currentPage);
+    },
     dia(){
       this.dialog=!this.dialog
     },
-    folddialog(ind){
+     async folddialog(ind){
       this.folder=true
       this.itemid=ind
+      this.user_name = JSON.parse(localStorage.getItem("person-inf")).userName
+    this.email = JSON.parse(localStorage.getItem("person-inf")).email;
+    console.warn(this.email)
+    this.massage.sender = this.email
+      await fetch(`http://localhost:8080/folders?id=${this.email}`,{
+          method:"GET"
+      }).then(res=>res.json())
+      .then(data=>this.folders_name=data);
+      console.warn(this.folders_name)
+    },
+    async folder_selected(){
+        this.multifolder = true
+        await fetch(`http://localhost:8080/folders?id=${this.email}`,{
+          method:"GET"
+      }).then(res=>res.json())
+      .then(data=>this.folders_name=data);
+      console.warn(this.folders_name)
     },
     closefolder(){
       this.folder=false
+      this.createNewVisible=false
     },
-    contactdialog(ind){
+    closemultifolder(){
+      this.multifolder=false
+      this.createNewVisible=false
+    },
+    contactdialog(ind,its){
       this.contacts=true
       this.itemid=ind
+      this.itemsender=its
     },
     closecontact(){
       this.contacts=false
     },
     setting(){
       this.sittingdialog=true
+    },
+    showCreateNew(){
+      this. createNewVisible=!this.createNewVisible
+    },
+    multyres(){
+      this.multi=true;
     },
     clear(){
       this.massage.receiver=''
@@ -327,7 +445,8 @@ export default {
         });
     },
    async send(){
-    await fetch("http://localhost:8080/mail/sent/create",{
+    await this.uploadFile();
+    await fetch(`http://localhost:8080/mail/sent/create`,{
         method:"POST",
         headers: {
           Accept : "application/json",
@@ -338,43 +457,45 @@ export default {
       localStorage.setItem("massage",JSON.stringify(this.massage))
       this.clear()
       this.dialog=false
-    },
-    handleFileChange(event) {
-      console.log(event.target.files)
-      this.massage.attachments = event.target.files;
+      location.reload()
     },
    async srch(){
-     let res=  await fetch(`http://localhost:8080/    ?searchby=${this.searchby},search=${this.search}`,{
+    console.log(this.searchby,this.search)
+   
+     await fetch(`http://localhost:8080/mails/inbox/search?id=${this.email}&type=${this.searchby}&keyWord=${this.search}`,{
         method:"GET"
-   })
-    this.emails=res.data
+   }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.searchby=''
+    this.search=''
+    console.warn(this.emails)
     },
     async filter(){
-      let res =await fetch(`http://localhost:8080/    ?filterby=${this.filterby}`,{
+    console.log(this.filterby,this.filterid)
+    await fetch(`http://localhost:8080/inbox/filter?id=${this.email}&criteria=${this.filterby}&keyWord=${this.filterid}`,{
         method:"GET"
-   })
-    this.emails=res.data
+   }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.filterid=''
+    this.filterby=''
     },
     async sort(){
-     let res= await fetch(`http://localhost:8080/    ?sortby=${this.sortby}`,{
+      console.log(this.sortby)
+     await fetch(`http://localhost:8080/mails/inbox/sort?id=${this.email}&type=${this.sortby}`,{
         method:"GET"
-     })
-      this.emails=res.data
+     }).then(res => res.json())
+    .then(data =>this.emails=data);
+    this.sortby='' 
     },
    async trash(ind){
+    this.ids[0] = ind
       console.log("size "+this.choosen.length)
       console.log(this.choosen[2])
       console.warn(JSON.stringify(this.emails[ind]));
-      fetch("http://localhost:8080/trash",{
-        method:"POST",
-        body:JSON.stringify(this.emails[ind])
-      });
-      let res= await fetch(`http://localhost:8080/ ?id=${ind}`,{
+      await fetch(`http://localhost:8080/mail/inbox/trash?id=${this.email}&ids=${this.ids}`,{
         method:"DELETE"
      })
-      this.emails=res.data
-
-
+     location.reload();
     },
     async delet() {
       if(this.choosen.length===0)
@@ -382,67 +503,166 @@ export default {
         alert("please select email ")
       }
       else{
-      await fetch("http://localhost:8080/trash",{
-        method:"POST",
-        body:this.choosen
-      })
-      let res= await fetch(`http://localhost:8080/ ?indcies=${this.choosen}`,{
+      await fetch(`http://localhost:8080/mail/inbox/trash?id=${this.email}&ids=${this.choosen}`,{
         method:"DELETE",
      })
-      this.emails=res.data
-
+      location.reload();
     }
     },
     async addtofolder(){
-      await fetch("http://localhost:8080/  ",
+      console.warn(this.itemid,this.foldername)
+      this.ids[0] = this.itemid
+      await fetch(`http://localhost:8080/folders/add?id=${this.email}&folderName=${this.foldername}&ids=${this.ids}`,
       {
         method:"POST",
-        body:(this.emails[this.itemid],this.foldername)
       })
+      this.folder=false
+      this.multifolder = false
+      this.foldername=''
+    },
+    async folderselected(){
+      console.warn(this.itemid,this.newfoldername)
+      await fetch(`http://localhost:8080/folders/add?id=${this.email}&folderName=${this.newfoldername}&ids=${this.choosen}`,
+      {
+        method:"POST",
+      })
+      this.folder=false
+      this.multifolder = false
+      this.newfoldername=''
     },
    async createnew(){
-      await fetch("http://localhost:8080/  ",
+    console.warn(this.itemid,this.newfoldername)
+    this.ids[0] = this.itemid
+      await fetch(`http://localhost:8080/folders/add?id=${this.email}&folderName=${this.newfoldername}&ids=${this.ids}`,
       {
         method:"POST",
-        body:(this.emails[this.itemid],this.newfoldername)
       })
-
+      this.folder=false
+      this.newfoldername=''
     },
    async addtocontacte(){
-      await fetch("http://localhost:8080/  ",
+   
+    console.warn(this.newname,this.itemsender)
+      await fetch(`http://localhost:8080/contact/create?id=${this.email}&name=${this.newname}&email=${this.itemsender}`,
       {
         method:"POST",
-        body:(this.emails[this.itemid],this.newname)
       })
-    }
+      this.contacts=false
+      this.newname=''
+    },
+    async uploadFile() {
+        let formData = new FormData();
+        let files = document.getElementById('fileupload').files;
+        if(files.length == 0){
+          this.massage.attachments = []
+          return
+        }
+        for (let i = 0; i < files.length; i++) {
+            formData.append("data", files[i]);
+        }
+        await fetch('http://localhost:8080/mail/sent/attachments', {
+            method: "POST",
+            body: formData
+        }).then(res => res.json())
+        .then(data => this.massage.attachments = data);
+    },
+    async downloadAttachment(attachmentId, attachmentName,mailId){
+      console.log(this.email, attachmentId, attachmentName,mailId)
+      let extension = null;
+      await fetch(`http://localhost:8080/mail/attachments/inbox/download?id=${this.email}&mailId=${mailId}&attachmentId=${attachmentId}`,{
+        method : "GET"
+      }).then(response => {
+        // Infer the file extension from the Content-Type header if not present
+        const contentType = response.headers.get('Content-Type');
+        extension = contentType.split('/').pop() || 'ext';
+        return response.blob()
+      })
+      .then(blob => {
+          // Create a blob URL and create a link element
+          const blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+
+          // Set link attributes
+          link.href = blobUrl;
+          link.download = "attachment_filename." + extension; // Set the desired filename
+
+          // Append the link to the document and trigger the click event
+          document.body.appendChild(link);
+          link.click();
+
+          // Remove the link from the document and revoke the blob URL
+          document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl);
+        })
+    },
+    getEmailId(item) {
+      return item ? item.id || '' : '';
+    },
    }
 };
 </script>
 
 <style scoped>
+.slider-label {
+  margin-right: 10px;
+  color: rgb(9, 2, 2);
+  font-weight: bold; 
+}
+
+.page-slider {
+  background: white; 
+}
+
+
+.current-page {
+  margin-left: 5px;
+  color: white;
+  font-weight: bold; 
+}
+
+.page-slider::-webkit-slider-thumb {
+  transition: transform 0.3s ease-in-out;
+}
+
+.page-slider:hover::-webkit-slider-thumb {
+  transform: scale(1.2); 
+}
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
 input[type="file"] {
   color: #3498db; 
   background-color: black;
   padding: 10px; 
   
+  
+}
+.box-title {
+  color: aliceblue;
+  margin-left:8%;
+  text-align: center;
+  padding-top: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: 36px; 
+  transition: color 0.3s ease; 
+}
+.box-title:hover {
+  color:  #3498db; 
 }
 .new {
   width:auto;
   height: 60px;
   margin-top: 15px;
-  margin-left: 100px;
-  background-color:#3498db; /* Green background color */
-  color: white; /* White text color */
-  text-align: center; /* Center text */
-  font-size: 16px; /* Set font size */
-  cursor: pointer; /* Add a pointer cursor on hover */
-  transition: transform 0.3s ease-in-out; /* Add transition for scaling effect */
+  margin-left: 2%;
+  background-color:#3498db; 
+  color: white; 
+  text-align: center; 
+  font-size: 16px;
+  cursor: pointer; 
+  transition: transform 0.3s ease-in-out; 
 }
 
-/* Add hover effect to scale the button */
+
 .new:hover {
-  transform: scale(1.1); /* Scale the button on hover */
+  transform: scale(1.1); 
 }
 table {
   border-collapse: collapse;
@@ -518,13 +738,13 @@ button:hover {
   50%,
   80%,
   100% {
-    transform: translateY(0); /* Bounce height */
+    transform: translateY(0); 
   }
   40% {
-    transform: translateY(-10px); /* Bounce height at its peak */
+    transform: translateY(-10px); 
   }
   60% {
-    transform: translateY(-5px); /* Bounce height during the bounce */
+    transform: translateY(-5px); 
   }
 }
 label {

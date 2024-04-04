@@ -32,6 +32,13 @@ public class FoldersServices {
                 usersDB.get(id).getFolders().get(folderName).put(mailId, mails.get(mailId));
     }
 
+    //rename
+    public void rename(String id, String oldFolderName, String newFolderName, Map<String, User> usersDB){
+        Map<String, Mail> mails = usersDB.get(id).getFolders().get(oldFolderName);
+        usersDB.get(id).getFolders().remove(oldFolderName);
+        usersDB.get(id).getFolders().put(newFolderName, mails);
+    }
+
     //delete folder
     public Map<String, Mail> deleteFolder(String id, String folderName, Map<String, User> usersDB){
         return usersDB.get(id).getFolders().remove(folderName);
