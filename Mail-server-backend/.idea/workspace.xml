@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a9fa89e7-3995-40bf-9c0f-57a6cf07b836" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Mail Server/users.json" beforeDir="false" afterPath="$PROJECT_DIR$/Mail Server/users.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/classes/AttachmentSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/classes/AttachmentSearch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/classes/Mail.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/classes/Mail.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/services/AttachmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/services/AttachmentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/services/DraftService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/services/DraftService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/services/SentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/omarkhaled/simple/webbased/email/program/services/SentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/AttachmentTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/AttachmentTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/BuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/BuilderTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/MailTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/MailTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/UserAdapterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/UserAdapterTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/UserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/omarkhaled/simple/webbased/email/program/classes/UserTest.java" afterDir="false" />
-    </list>
+    <list default="true" id="a9fa89e7-3995-40bf-9c0f-57a6cf07b836" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,7 +31,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/CSED/year 2/term 3/programing 2/Labs/L4/simple web-based email program/simple-web-based-email-program"
+    "last_opened_file_path": "E:/CSED/year 3/term 5/Database System/Project/Smart-City-Parking-Management-System/Parking System Backend/Parking-System"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
