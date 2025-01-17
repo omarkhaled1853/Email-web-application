@@ -1,4 +1,4 @@
-# Simple-Web-Based-Email-Program
+# Email-web-application
 
 ## Overview
 This project aims to implement the basic functionalities of a mail server using design patterns, including the manipulation of mails, attachments, contacts, etc.
